@@ -8,7 +8,7 @@
 
 @media (min-width: 1024px) {
     .lg\:pl-64 {
-        padding-left: 0rem;
+        padding-left: 0rem !important;
         width: 100%;
     }
 }
