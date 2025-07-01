@@ -44,7 +44,7 @@ const UserDropdown = () => {
 
                 <DropdownItem
                     tag={Link}
-                    to="/pages/"
+                    to="/settings"
                     onClick={(e) => e.preventDefault()}
                 >
                     <Settings size={14} className="me-75" />

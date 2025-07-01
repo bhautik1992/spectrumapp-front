@@ -23,10 +23,11 @@ const DefaultRoute = "/login";
 
 const Login = lazy(() => import("../../views/Login"));
 const ForgotPassword = lazy(() => import("../../views/ForgotPassword"));
-const Home = lazy(() => import("../../views/Home"));
 const Error = lazy(() => import("../../views/Error"));
 const NoRecord = lazy(() => import("../../views/NoRecord"));
 const NotAuthorized = lazy(() => import("../../views/NotAuthorized"));
+const Home = lazy(() => import("../../views/Home"));
+const Settings = lazy(() => import("../../views/Settings"));
 
 // ** Merge Routes
 const Routes = [
@@ -40,6 +41,14 @@ const Routes = [
         element: (
             <PrivateRoute>
                 <Home />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: "/settings",
+        element: (
+            <PrivateRoute>
+                <Settings />
             </PrivateRoute>
         ),
     },

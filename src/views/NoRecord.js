@@ -14,7 +14,7 @@ const NoRecord = () => {
     return (
         <>        
             <Helmet>
-                <title>404 | Record Not Found</title>
+                <title>Record Not Found</title>
             </Helmet>
 
             <div className="misc-wrapper">

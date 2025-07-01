@@ -1,8 +1,13 @@
 import { Card,CardHeader,CardBody,CardTitle,CardText,CardLink } from "reactstrap";
+import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
     return (
         <div>
+            <Helmet>
+                <title>Home</title>
+            </Helmet>
+
             <Card>
                 <CardHeader>
                     <CardTitle>Kick start your project 🚀</CardTitle>
