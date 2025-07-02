@@ -11,7 +11,7 @@ const LoginReducer = (state = loggedInUser, action) => {
             return {
                 ...state,
                 isAuthenticated: true,
-                user: action.data.data
+                user: action.data
             }
         case LOGOUT_REQUEST:
             localStorage.clear();

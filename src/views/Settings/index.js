@@ -45,8 +45,57 @@ const Index = () => {
             .label('Instance Url')
     })
 
+    // Using an IIFE (Immediately Invoked Function Expression) Inside useEffect
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await axiosInstance.get('settings');
+
+                if(response.data.success){
+                    setInitialValues(prevValue => ({
+                        ...prevValue,
+                        ...response.data.data
+                    }))
+                }
+            } catch (error) {
+                let errorMessage = import.meta.env.VITE_ERROR_MSG;
+    
+                if(error.response){
+                    errorMessage = error.response.data?.message || JSON.stringify(error.response.data); // Case 1: API responded with an error
+                }else if (error.request){
+                    errorMessage = import.meta.env.VITE_NO_RESPONSE; // Case 2: Network error
+                }
+        
+                // console.error(error.message);
+                toast.error(errorMessage);
+            }
+        })();
+    },[])
+
     const onSubmit = async (values) => {
-        alert("Success") 
+        try {
+            const response = await axiosInstance.post('settings', values);
+            
+            if(response.data.success){
+                toast.success(response.data.message);
+
+                setInitialValues(prevValue => ({
+                    ...prevValue,
+                    ...response.data.data,
+                }))
+            }
+        } catch (error) {
+            let errorMessage = import.meta.env.VITE_ERROR_MSG;
+
+            if(error.response){
+                errorMessage = error.response.data?.message || JSON.stringify(error.response.data); // Case 1: API responded with an error
+            }else if (error.request){
+                errorMessage = import.meta.env.VITE_NO_RESPONSE; // Case 2: Network error
+            }
+    
+            // console.error(error.message);
+            toast.error(errorMessage);
+        }
     }
 
     return (

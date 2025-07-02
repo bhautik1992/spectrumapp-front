@@ -40,24 +40,10 @@ const Login = () => {
 
     const onSubmit = async (values) => {
         try{
-            // const response = await axiosInstance.post('login', values);
-
-            const response = {
-                data: {
-                    success: true,
-                    message: "Loggedin Successfully",
-                    token: "mocked-jwt-token-123456",
-                    user: {
-                        id: 1,
-                        name: "John Doe",
-                        email: "john@example.com",
-                        role: "admin"
-                    }
-                }
-            };
+            const response = await axiosInstance.post('login', values);
 
             if(response.data.success){
-                dispatch(login(response.data.user));
+                dispatch(login(response.data.data));
                 toast.success(response.data.message);
                 navigate('/home');
             }
@@ -70,7 +56,7 @@ const Login = () => {
                 errorMessage = import.meta.env.VITE_NO_RESPONSE; // Case 2: Network error
             }
     
-            console.error(error.message);
+            // console.error(error.message);
             toast.error(errorMessage);
         }
     }
