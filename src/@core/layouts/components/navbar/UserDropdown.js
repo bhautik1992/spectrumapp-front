@@ -37,16 +37,12 @@ const UserDropdown = () => {
             </DropdownToggle>
             
             <DropdownMenu end>
-                <DropdownItem tag={Link} to="/" onClick={(e) => e.preventDefault()}>
+                <DropdownItem tag={Link} to="/">
                     <User size={14} className="me-75" />
                     <span className="align-middle">Profile</span>
                 </DropdownItem>
 
-                <DropdownItem
-                    tag={Link}
-                    to="/settings"
-                    onClick={(e) => e.preventDefault()}
-                >
+                <DropdownItem tag={Link} to="/settings">
                     <Settings size={14} className="me-75" />
                     <span className="align-middle">Settings</span>
                 </DropdownItem>

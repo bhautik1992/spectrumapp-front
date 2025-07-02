@@ -12,36 +12,37 @@ import '@styles/react/pages/page-account-settings.scss'
 import { Helmet } from 'react-helmet-async';
 import '@styles/react/libs/input-number/input-number.scss';
 import { useDispatch } from "react-redux";
+import { ChevronsLeft } from 'react-feather'
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
     const dispatch = useDispatch();
+    const navigate = new useNavigate();
 
     const [initialValues, setInitialValues] = useState({
         sf_access_token: '',
+        sf_id:'',
         sf_instance_url : '',
     });
 
     const validationSchema = Yup.object({
         sf_access_token : Yup.string()
-            .required()
             .max(150)
             .label('Access Token'),
         sf_id : Yup.string()
-            .required()
             .max(25)
             .label('Id'),
         sf_instance_url : Yup.string()
-            .required()
-            .matches(
-                /^https:\/\/([\w]+\.)?salesforce\.com\/.+$/,
-                "Invalid salesforce URL format"
-            )
             .max(100)
+            .matches(
+                /^https:\/\/([a-zA-Z0-9-]+\.)*my\.salesforce\.com$/,
+                "Invalid Salesforce Instance URL format"
+            )
             .label('Instance Url')
     })
 
     const onSubmit = async (values) => {
-        // 
+        alert("Success") 
     }
 
     return (
@@ -55,6 +56,12 @@ const Index = () => {
                     <Card>
                         <CardHeader className='border-bottom'>
                             <CardTitle tag='h4'>Settings</CardTitle>
+
+                            <CardTitle tag='h4'>
+                                <Button color='secondary' size='sm' onClick={() => navigate(-1)}>
+                                    <ChevronsLeft size={15} />
+                                </Button>
+                            </CardTitle>
                         </CardHeader>
 
                         <CardBody className='pt-1'>
@@ -81,7 +88,7 @@ const Index = () => {
                                                     maxLength={150}
                                                     autoComplete="off"
                                                     autoFocus
-                                                    />
+                                                />
 
                                                 <ErrorMessage name="sf_access_token" component="div" className="invalid-feedback"/>
                                             </Col>
