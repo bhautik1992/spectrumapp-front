@@ -21,6 +21,7 @@ const Index = () => {
 
     const [initialValues, setInitialValues] = useState({
         sf_access_token: '',
+        sf_client_id: '',
         sf_id:'',
         sf_instance_url : '',
     });
@@ -29,6 +30,9 @@ const Index = () => {
         sf_access_token : Yup.string()
             .max(150)
             .label('Access Token'),
+        sf_client_id: Yup.string()
+            .max(15)
+            .label('Client Id'),
         sf_id : Yup.string()
             .max(25)
             .label('Id'),
@@ -94,6 +98,24 @@ const Index = () => {
                                             </Col>
 
                                             <Col sm='4' className='mb-1'>
+                                                <Label className='form-label' for='sf_client_id'>
+                                                    SF Client Id
+                                                </Label>
+                                
+                                                <Field
+                                                    type="text"
+                                                    name="sf_client_id"
+                                                    id="sf_client_id"
+                                                    placeholder="Enter SF Client Id"
+                                                    className={`form-control ${errors.sf_client_id && touched.sf_client_id ? 'is-invalid' : ''}`}
+                                                    maxLength={15}
+                                                    autoComplete="off"
+                                                />
+
+                                                <ErrorMessage name="sf_client_id" component="div" className="invalid-feedback"/>
+                                            </Col>
+
+                                            <Col sm='4' className='mb-1'>
                                                 <Label className='form-label' for='sf_id'>
                                                     SF Id
                                                 </Label>
@@ -110,7 +132,9 @@ const Index = () => {
 
                                                 <ErrorMessage name="sf_id" component="div" className="invalid-feedback"/>
                                             </Col>
+                                        </Row>
 
+                                        <Row>
                                             <Col sm='4' className='mb-1'>
                                                 <Label className='form-label' for='sf_instance_url'>
                                                     SF Instance Url
