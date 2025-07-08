@@ -143,7 +143,7 @@ const Index = () => {
                                                     className={`form-control ${errors.sf_instance_url && touched.sf_instance_url ? 'is-invalid' : ''}`}
                                                     maxLength={100}
                                                     autoComplete="off"
-                                                    readOnly
+                                                    autoFocus
                                                 />
 
                                                 <ErrorMessage name="sf_instance_url" component="div" className="invalid-feedback"/>
@@ -161,7 +161,7 @@ const Index = () => {
                                                     placeholder="Enter SF Client Id"
                                                     className={`form-control ${errors.sf_client_id && touched.sf_client_id ? 'is-invalid' : ''}`}
                                                     autoComplete="off"
-                                                    readOnly
+                                                    
                                                 />
 
                                                 <ErrorMessage name="sf_client_id" component="div" className="invalid-feedback"/>
@@ -179,7 +179,7 @@ const Index = () => {
                                                     placeholder="Enter SF Client Secret"
                                                     className={`form-control ${errors.sf_client_secret && touched.sf_client_secret ? 'is-invalid' : ''}`}
                                                     autoComplete="off"
-                                                    readOnly
+                                                    
                                                 />
 
                                                 <ErrorMessage name="sf_client_secret" component="div" className="invalid-feedback"/>
@@ -199,7 +199,7 @@ const Index = () => {
                                                     placeholder="Enter SF Username"
                                                     className={`form-control ${errors.sf_username && touched.sf_username ? 'is-invalid' : ''}`}
                                                     autoComplete="off"
-                                                    readOnly
+                                                    
                                                 />
 
                                                 <ErrorMessage name="sf_username" component="div" className="invalid-feedback"/>
@@ -217,7 +217,7 @@ const Index = () => {
                                                     placeholder="Enter SF Security Token"
                                                     className={`form-control ${errors.sf_security_token && touched.sf_security_token ? 'is-invalid' : ''}`}
                                                     autoComplete="off"
-                                                    readOnly
+                                                    
                                                 />
 
                                                 <ErrorMessage name="sf_security_token" component="div" className="invalid-feedback"/>
@@ -235,20 +235,20 @@ const Index = () => {
                                                     placeholder="Enter SF Access Token"
                                                     className={`form-control ${errors.sf_access_token && touched.sf_access_token ? 'is-invalid' : ''}`}
                                                     autoComplete="off"
-                                                    readOnly
+                                                    
                                                 />
 
                                                 <ErrorMessage name="sf_access_token" component="div" className="invalid-feedback"/>
                                             </Col>
                                         </Row>
 
-                                        {/* <Row>
+                                        <Row>
                                             <Col className='mt-1' sm='12'>
                                                 <Button type='submit' className='me-1' color='primary'>
                                                     Save
                                                 </Button>
                                             </Col>
-                                        </Row> */}
+                                        </Row>
                                     </Form>
                                 )}
                             </Formik>
