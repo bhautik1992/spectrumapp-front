@@ -20,29 +20,32 @@ const Index = () => {
     const navigate = new useNavigate();
 
     const [initialValues, setInitialValues] = useState({
-        sf_access_token: '',
-        sf_client_id: '',
-        sf_id:'',
-        sf_instance_url : '',
+        sf_instance_url  : '',
+        sf_client_id     : '',
+        sf_client_secret : '',
+        sf_username      : '',
+        sf_security_token: '',
+        sf_access_token  : '',
     });
 
     const validationSchema = Yup.object({
-        sf_access_token : Yup.string()
-            .max(150)
-            .label('Access Token'),
-        sf_client_id: Yup.string()
-            .max(15)
-            .label('Client Id'),
-        sf_id : Yup.string()
-            .max(25)
-            .label('Id'),
-        sf_instance_url : Yup.string()
+        sf_instance_url: Yup.string()
             .max(100)
             .matches(
                 /^https:\/\/([a-zA-Z0-9-]+\.)*my\.salesforce\.com$/,
                 "Invalid Salesforce Instance URL format"
             )
-            .label('Instance Url')
+            .label('Instance Url'),
+        sf_client_id: Yup.string()
+            .label('Client Id'),
+        sf_client_secret: Yup.string()
+            .label('Client Secret'),
+        sf_username: Yup.string()
+            .label('Username'),
+        sf_security_token: Yup.string()
+            .label('Security Token'),
+        sf_access_token: Yup.string()
+            .label('Access Token'),
     })
 
     // Using an IIFE (Immediately Invoked Function Expression) Inside useEffect
@@ -128,22 +131,22 @@ const Index = () => {
                                     <Form>
                                         <Row>
                                             <Col sm='4' className='mb-1'>
-                                                <Label className='form-label' for='sf_access_token'>
-                                                    SF Access Token
+                                                <Label className='form-label' for='sf_instance_url'>
+                                                    SF Instance Url
                                                 </Label>
                                 
                                                 <Field
                                                     type="text"
-                                                    name="sf_access_token"
-                                                    id="sf_access_token"
-                                                    placeholder="Enter SF Access Token"
-                                                    className={`form-control ${errors.sf_access_token && touched.sf_access_token ? 'is-invalid' : ''}`}
-                                                    maxLength={150}
+                                                    name="sf_instance_url"
+                                                    id="sf_instance_url"
+                                                    placeholder="Enter SF Instance Url"
+                                                    className={`form-control ${errors.sf_instance_url && touched.sf_instance_url ? 'is-invalid' : ''}`}
+                                                    maxLength={100}
                                                     autoComplete="off"
-                                                    autoFocus
+                                                    readOnly
                                                 />
 
-                                                <ErrorMessage name="sf_access_token" component="div" className="invalid-feedback"/>
+                                                <ErrorMessage name="sf_instance_url" component="div" className="invalid-feedback"/>
                                             </Col>
 
                                             <Col sm='4' className='mb-1'>
@@ -157,59 +160,95 @@ const Index = () => {
                                                     id="sf_client_id"
                                                     placeholder="Enter SF Client Id"
                                                     className={`form-control ${errors.sf_client_id && touched.sf_client_id ? 'is-invalid' : ''}`}
-                                                    maxLength={15}
                                                     autoComplete="off"
+                                                    readOnly
                                                 />
 
                                                 <ErrorMessage name="sf_client_id" component="div" className="invalid-feedback"/>
                                             </Col>
 
                                             <Col sm='4' className='mb-1'>
-                                                <Label className='form-label' for='sf_id'>
-                                                    SF Id
+                                                <Label className='form-label' for='sf_client_secret'>
+                                                    SF Client Secret
                                                 </Label>
                                 
                                                 <Field
                                                     type="text"
-                                                    name="sf_id"
-                                                    id="sf_id"
-                                                    placeholder="Enter SF Id"
-                                                    className={`form-control ${errors.sf_id && touched.sf_id ? 'is-invalid' : ''}`}
-                                                    maxLength={25}
+                                                    name="sf_client_secret"
+                                                    id="sf_client_secret"
+                                                    placeholder="Enter SF Client Secret"
+                                                    className={`form-control ${errors.sf_client_secret && touched.sf_client_secret ? 'is-invalid' : ''}`}
                                                     autoComplete="off"
+                                                    readOnly
                                                 />
 
-                                                <ErrorMessage name="sf_id" component="div" className="invalid-feedback"/>
+                                                <ErrorMessage name="sf_client_secret" component="div" className="invalid-feedback"/>
                                             </Col>
                                         </Row>
-
+                                        
                                         <Row>
                                             <Col sm='4' className='mb-1'>
-                                                <Label className='form-label' for='sf_instance_url'>
-                                                    SF Instance Url
+                                                <Label className='form-label' for='sf_username'>
+                                                    SF Username
                                                 </Label>
                                 
                                                 <Field
                                                     type="text"
-                                                    name="sf_instance_url"
-                                                    id="sf_instance_url"
-                                                    placeholder="Enter SF Instance Url"
-                                                    className={`form-control ${errors.sf_instance_url && touched.sf_instance_url ? 'is-invalid' : ''}`}
-                                                    maxLength={100}
+                                                    name="sf_username"
+                                                    id="sf_username"
+                                                    placeholder="Enter SF Username"
+                                                    className={`form-control ${errors.sf_username && touched.sf_username ? 'is-invalid' : ''}`}
                                                     autoComplete="off"
+                                                    readOnly
                                                 />
 
-                                                <ErrorMessage name="sf_instance_url" component="div" className="invalid-feedback"/>
+                                                <ErrorMessage name="sf_username" component="div" className="invalid-feedback"/>
+                                            </Col>
+
+                                            <Col sm='4' className='mb-1'>
+                                                <Label className='form-label' for='sf_security_token'>
+                                                    SF Security Token
+                                                </Label>
+                                
+                                                <Field
+                                                    type="text"
+                                                    name="sf_security_token"
+                                                    id="sf_security_token"
+                                                    placeholder="Enter SF Security Token"
+                                                    className={`form-control ${errors.sf_security_token && touched.sf_security_token ? 'is-invalid' : ''}`}
+                                                    autoComplete="off"
+                                                    readOnly
+                                                />
+
+                                                <ErrorMessage name="sf_security_token" component="div" className="invalid-feedback"/>
+                                            </Col>
+
+                                            <Col sm='4' className='mb-1'>
+                                                <Label className='form-label' for='sf_access_token'>
+                                                    SF Access Token
+                                                </Label>
+                                
+                                                <Field
+                                                    type="text"
+                                                    name="sf_access_token"
+                                                    id="sf_access_token"
+                                                    placeholder="Enter SF Access Token"
+                                                    className={`form-control ${errors.sf_access_token && touched.sf_access_token ? 'is-invalid' : ''}`}
+                                                    autoComplete="off"
+                                                    readOnly
+                                                />
+
+                                                <ErrorMessage name="sf_access_token" component="div" className="invalid-feedback"/>
                                             </Col>
                                         </Row>
 
-                                        <Row>
+                                        {/* <Row>
                                             <Col className='mt-1' sm='12'>
                                                 <Button type='submit' className='me-1' color='primary'>
                                                     Save
                                                 </Button>
                                             </Col>
-                                        </Row>
+                                        </Row> */}
                                     </Form>
                                 )}
                             </Formik>
