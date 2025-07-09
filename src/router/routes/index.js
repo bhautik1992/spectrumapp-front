@@ -27,6 +27,7 @@ const Error = lazy(() => import("../../views/Error"));
 const NoRecord = lazy(() => import("../../views/NoRecord"));
 const NotAuthorized = lazy(() => import("../../views/NotAuthorized"));
 const Home = lazy(() => import("../../views/Home"));
+const Customers = lazy(() => import("../../views/Customers"));
 const Settings = lazy(() => import("../../views/Settings"));
 
 // ** Merge Routes
@@ -41,6 +42,14 @@ const Routes = [
         element: (
             <PrivateRoute>
                 <Home />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: "/customers",
+        element: (
+            <PrivateRoute>
+                <Customers />
             </PrivateRoute>
         ),
     },
