@@ -2,6 +2,7 @@ import { Row,Col,Card,CardHeader,CardBody,CardTitle,CardText,CardLink } from "re
 import { Helmet } from 'react-helmet-async';
 import { useState, useEffect } from 'react';
 import axiosInstance from  '../../helper/axiosInstance';
+import toast from 'react-hot-toast'
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { customersTableColumn } from '../Table/Columns';
