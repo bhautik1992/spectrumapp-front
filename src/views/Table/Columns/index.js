@@ -42,13 +42,13 @@ export const customersTableColumn = (currentPage, rowsPerPage) => [
         ),
         width: "220px"
     },
-    {
+    { 
         name: "Name",
-        selector: (row) => `${row.lead_first_name || ''} ${row.lead_last_name || ''}`.trim(),
+        selector: (row) => row.full_name, 
         sortable: true,
         cell: (row) => (
             <>
-                {(row.lead_first_name || '') + ' ' + (row.lead_last_name || '')}
+                {row.full_name}
             </>
         ),
         width: "250px"
