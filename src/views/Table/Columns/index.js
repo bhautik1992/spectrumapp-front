@@ -1,3 +1,18 @@
+const leadSourceLabels = {
+    1: "Web",
+    2: "Phone Inquiry",
+    3: "Partner - Referral",
+    4: "Purchased - List",
+    5: "Other"
+};
+
+const leadStatusLabels = {
+    1: "Open - Not Contacted",
+    2: "Working - Contacted",
+    3: "Closed - Converted",
+    4: "Closed - Not Converted"
+};
+
 export const customersTableColumn = (currentPage, rowsPerPage) => [
     {
         name: "#", 
@@ -13,7 +28,8 @@ export const customersTableColumn = (currentPage, rowsPerPage) => [
             <>
                 {row.shopify_id}
             </>
-        )
+        ),
+        width: "150px"
     },
     { 
         name: "Salesforce Lead Id",
@@ -23,27 +39,30 @@ export const customersTableColumn = (currentPage, rowsPerPage) => [
             <>
                 {row.salesforce_lead_id}
             </>
-        )
+        ),
+        width: "220px"
     },
-    { 
-        name: "First Name",
-        selector: (row) => row.lead_first_name, 
+    {
+        name: "Name",
+        selector: (row) => `${row.lead_first_name || ''} ${row.lead_last_name || ''}`.trim(),
         sortable: true,
         cell: (row) => (
             <>
-                {row.lead_first_name}
+                {(row.lead_first_name || '') + ' ' + (row.lead_last_name || '')}
             </>
-        )
+        ),
+        width: "250px"
     },
     { 
-        name: "Last Name",
-        selector: (row) => row.lead_last_name, 
+        name: "Company",
+        selector: (row) => row.lead_company, 
         sortable: true,
         cell: (row) => (
             <>
-                {row.lead_last_name}
+                {row.lead_company}
             </>
-        )
+        ),
+        width: "200px"
     },
     { 
         name: "Email",
@@ -53,7 +72,8 @@ export const customersTableColumn = (currentPage, rowsPerPage) => [
             <>
                 {row.lead_email}
             </>
-        )
+        ),
+        width: "250px"
     },
     { 
         name: "Phone",
@@ -63,6 +83,29 @@ export const customersTableColumn = (currentPage, rowsPerPage) => [
             <>
                 {row.lead_phone}
             </>
-        )
+        ),
+        width: "150px"
+    },
+    { 
+        name: "Source",
+        selector: (row) => row.lead_source, 
+        sortable: true,
+        cell: (row) => (
+            <>
+                {leadSourceLabels[row.lead_source] || "Unknown"}
+            </>
+        ),
+        width: "150px"
+    },
+    { 
+        name: "Status",
+        selector: (row) => row.lead_status, 
+        sortable: true,
+        cell: (row) => (
+            <>
+                {leadStatusLabels[row.lead_status] || "Unknown"}
+            </>
+        ),
+        width: "150px"
     }
 ];
