@@ -20,12 +20,15 @@ const Index = () => {
     const navigate = new useNavigate();
 
     const [initialValues, setInitialValues] = useState({
-        sf_instance_url  : '',
-        sf_client_id     : '',
-        sf_client_secret : '',
-        sf_username      : '',
-        sf_security_token: '',
-        sf_access_token  : '',
+        sf_instance_url       : '',
+        sf_client_id          : '',
+        sf_client_secret      : '',
+        sf_username           : '',
+        sf_security_token     : '',
+        sf_access_token       : '',
+        sp_app_name           : '',
+        sp_app_url            : '',
+        admin_api_access_token: '',
     });
 
     const validationSchema = Yup.object({
@@ -46,6 +49,17 @@ const Index = () => {
             .label('Security Token'),
         sf_access_token: Yup.string()
             .label('Access Token'),
+        sp_app_name: Yup.string()
+            .label('App Name'),
+        sp_app_url: Yup.string()
+            .max(100)
+            .matches(
+              /^https:\/\/([a-zA-Z0-9-]+\.)?myshopify\.com$/,
+              "Invalid Shopify App URL format"
+            )
+            .label('App URL'),
+        admin_api_access_token: Yup.string()
+            .label('Admin API Access Token'),
     })
 
     // Using an IIFE (Immediately Invoked Function Expression) Inside useEffect
@@ -132,7 +146,7 @@ const Index = () => {
                                         <Row>
                                             <Col sm='4' className='mb-1'>
                                                 <Label className='form-label' for='sf_instance_url'>
-                                                    SF Instance Url
+                                                    Salesforce Instance Url
                                                 </Label>
                                 
                                                 <Field
@@ -151,7 +165,7 @@ const Index = () => {
 
                                             <Col sm='4' className='mb-1'>
                                                 <Label className='form-label' for='sf_client_id'>
-                                                    SF Client Id
+                                                    Salesforce Client Id
                                                 </Label>
                                 
                                                 <Field
@@ -169,7 +183,7 @@ const Index = () => {
 
                                             <Col sm='4' className='mb-1'>
                                                 <Label className='form-label' for='sf_client_secret'>
-                                                    SF Client Secret
+                                                    Salesforce Client Secret
                                                 </Label>
                                 
                                                 <Field
@@ -189,7 +203,7 @@ const Index = () => {
                                         <Row>
                                             <Col sm='4' className='mb-1'>
                                                 <Label className='form-label' for='sf_username'>
-                                                    SF Username
+                                                    Salesforce Username
                                                 </Label>
                                 
                                                 <Field
@@ -207,7 +221,7 @@ const Index = () => {
 
                                             <Col sm='4' className='mb-1'>
                                                 <Label className='form-label' for='sf_security_token'>
-                                                    SF Security Token
+                                                    Salesforce Security Token
                                                 </Label>
                                 
                                                 <Field
@@ -225,7 +239,7 @@ const Index = () => {
 
                                             <Col sm='4' className='mb-1'>
                                                 <Label className='form-label' for='sf_access_token'>
-                                                    SF Access Token
+                                                    Salesforce Access Token
                                                 </Label>
                                 
                                                 <Field
@@ -239,6 +253,62 @@ const Index = () => {
                                                 />
 
                                                 <ErrorMessage name="sf_access_token" component="div" className="invalid-feedback"/>
+                                            </Col>
+                                        </Row>
+                                        
+                                        <Row>
+                                            <Col sm='4' className='mb-1'>
+                                                <Label className='form-label' for='sp_app_name'>
+                                                    Shopify App Name
+                                                </Label>
+                                
+                                                <Field
+                                                    type="text"
+                                                    name="sp_app_name"
+                                                    id="sp_app_name"
+                                                    placeholder="Enter Shopify App Name"
+                                                    className={`form-control ${errors.sp_app_name && touched.sp_app_name ? 'is-invalid' : ''}`}
+                                                    autoComplete="off"
+                                                    
+                                                />
+
+                                                <ErrorMessage name="sp_app_name" component="div" className="invalid-feedback"/>
+                                            </Col>
+
+                                            <Col sm='4' className='mb-1'>
+                                                <Label className='form-label' for='sp_app_url'>
+                                                    Shopify App URL
+                                                </Label>
+                                
+                                                <Field
+                                                    type="text"
+                                                    name="sp_app_url"
+                                                    id="sp_app_url"
+                                                    placeholder="Enter Shopify App URL"
+                                                    className={`form-control ${errors.sp_app_url && touched.sp_app_url ? 'is-invalid' : ''}`}
+                                                    autoComplete="off"
+                                                    
+                                                />
+
+                                                <ErrorMessage name="sp_app_url" component="div" className="invalid-feedback"/>
+                                            </Col>
+
+                                            <Col sm='4' className='mb-1'>
+                                                <Label className='form-label' for='admin_api_access_token'>
+                                                    Admin API Access Token
+                                                </Label>
+                                
+                                                <Field
+                                                    type="text"
+                                                    name="admin_api_access_token"
+                                                    id="admin_api_access_token"
+                                                    placeholder="Enter Admin API Access Token"
+                                                    className={`form-control ${errors.admin_api_access_token && touched.admin_api_access_token ? 'is-invalid' : ''}`}
+                                                    autoComplete="off"
+                                                    
+                                                />
+
+                                                <ErrorMessage name="admin_api_access_token" component="div" className="invalid-feedback"/>
                                             </Col>
                                         </Row>
 
