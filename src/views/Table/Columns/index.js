@@ -3,7 +3,8 @@ const leadSourceLabels = {
     2: "Phone Inquiry",
     3: "Partner - Referral",
     4: "Purchased - List",
-    5: "Other"
+    5: "Other",
+    6: "Shopify Registration",
 };
 
 const leadStatusLabels = {
@@ -22,11 +23,11 @@ export const customersTableColumn = (currentPage, rowsPerPage) => [
     },
     { 
         name: "Shopify Id",
-        selector: (row) => row.shopify_id, 
+        selector: (row) => row.shopify_cus_id, 
         sortable: true,
         cell: (row) => (
             <>
-                {row.shopify_id}
+                {row.shopify_cus_id}
             </>
         ),
         width: "150px"
