@@ -1,28 +1,15 @@
-const leadSourceLabels = {
-    1: "Web",
-    2: "Phone Inquiry",
-    3: "Partner - Referral",
-    4: "Purchased - List",
-    5: "Other",
-    6: "Shopify Registration",
-};
+import { leadSourceLabels, leadStatusLabels } from '../../../constants';
+import { Edit } from "react-feather";
 
-const leadStatusLabels = {
-    1: "Open - Not Contacted",
-    2: "Working - Contacted",
-    3: "Closed - Converted",
-    4: "Closed - Not Converted"
-};
-
-export const customersTableColumn = (currentPage, rowsPerPage) => [
-    {
-        name: "#", 
-        selector: (row, index) => (currentPage - 1) * rowsPerPage + index + 1,
-        sortable: false, 
-        width: "60px" 
-    },
+export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
+    // {
+    //     name: "#", 
+    //     selector: (row, index) => (currentPage - 1) * rowsPerPage + index + 1,
+    //     sortable: false, 
+    //     width: "60px" 
+    // },
     { 
-        name: "Shopify Id",
+        name: "Shopify CID",
         selector: (row) => row.shopify_cus_id, 
         sortable: true,
         cell: (row) => (
@@ -30,7 +17,7 @@ export const customersTableColumn = (currentPage, rowsPerPage) => [
                 {row.shopify_cus_id}
             </>
         ),
-        width: "150px"
+        width: "155px"
     },
     { 
         name: "Salesforce Lead Id",
@@ -52,7 +39,7 @@ export const customersTableColumn = (currentPage, rowsPerPage) => [
                 {row.full_name}
             </>
         ),
-        width: "250px"
+        width: "245px"
     },
     { 
         name: "Company",
@@ -74,7 +61,7 @@ export const customersTableColumn = (currentPage, rowsPerPage) => [
                 {row.lead_email}
             </>
         ),
-        width: "250px"
+        width: "230px"
     },
     { 
         name: "Phone",
@@ -108,5 +95,15 @@ export const customersTableColumn = (currentPage, rowsPerPage) => [
             </>
         ),
         width: "150px"
+    },
+    { 
+        name: "Actions",
+        ignoreRowClick: true,
+        allowOverflow: true,
+        cell: (row) => (
+            <div className='d-flex'>
+                <Edit size={18} className="pointer text-primary ms-1" onClick={() => editRecord(row)} />       
+            </div>
+        )
     }
 ];
