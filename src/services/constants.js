@@ -1,5 +1,6 @@
 export const LOGIN_REQUEST  = 'LOGIN_REQUEST';
 export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
 export const CUSTOMERS_LIST = 'CUSTOMERS_LIST';
+export const CUSTOMER_UPDATE = 'CUSTOMER_UPDATE';
 
 

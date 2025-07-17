@@ -10,6 +10,7 @@ import {Formik, Form} from 'formik';
 import Select from 'react-select'
 import { selectThemeColors } from '@utils'
 import { leadSourceLabels, leadStatusOptions } from '../../constants';
+import { CUSTOMER_UPDATE } from '../../services/constants';
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { customersTableColumn } from '../Table/Columns';
@@ -53,12 +54,14 @@ const Customers = () => {
             if(response.data.success){
                 toast.success(response.data.message);
                 toggleSidebar();
-
-                // progressbar, update table row.
-                // setInitialValues(prevValue => ({
-                //     ...prevValue,
-                //     ...response.data.data,
-                // }))
+                
+                dispatch({
+                    type:CUSTOMER_UPDATE,
+                    payload:{ 
+                        shopify_cus_id: values.shopify_cus_id,
+                        lead_status   : values.lead_status,
+                    }
+                })
             }
         } catch (error) {
             let errorMessage = import.meta.env.VITE_ERROR_MSG;

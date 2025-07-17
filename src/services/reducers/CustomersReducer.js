@@ -1,4 +1,4 @@
-import { CUSTOMERS_LIST } from '../constants';
+import { CUSTOMERS_LIST, CUSTOMER_UPDATE } from '../constants';
 
 const initialState  = {
     list:[],
@@ -12,6 +12,13 @@ const CustomersReducer = (state = initialState, action) => {
                 ...state,
                 list: action.data.customers,
                 total: action.data.total,
+            }
+        case CUSTOMER_UPDATE:
+            return {
+                list: state.list.map(list => list.shopify_cus_id === action.payload.shopify_cus_id ? { 
+                    ...list,
+                    lead_status: action.payload.lead_status
+                }: list)
             }
         default:
             return state
