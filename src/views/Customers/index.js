@@ -1,27 +1,30 @@
-import { Row,Col,Card,CardHeader,CardTitle,Label,Button } from "reactstrap";
+import { Row,Col,Card,CardHeader,CardTitle,Modal,ModalBody,ModalHeader } from "reactstrap";
 import { Helmet } from 'react-helmet-async';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axiosInstance from  '../../helper/axiosInstance';
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from "react-redux";
 import { getCustomers } from '../../services/actions/CustomersAction';
-import Sidebar from '@components/sidebar'
-import {Formik, Form} from 'formik';
-import Select from 'react-select'
-import { selectThemeColors } from '@utils'
-import { leadSourceLabels, leadStatusOptions } from '../../constants';
+import {Formik, Form, Field } from 'formik';
 import { CUSTOMER_UPDATE } from '../../services/constants';
+import { User, CheckCircle, Check } from 'react-feather'
+import Wizard from '@components/wizard'
+import CustomerDetails from './CustomerDetails';
+import Checklist from './Checklist';
+import SubmitStep from './SubmitStep';
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { customersTableColumn } from '../Table/Columns';
 
 const Customers = () => {
+    const ref = useRef(null);
     const dispatch = new useDispatch();
     const { list, total } = useSelector((state) => state.CustomersReducer);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchValue, setSearchValue] = useState("");
+    const [stepper, setStepper] = useState(null)
     
     const [open, setOpen] = useState(false)
     const [info, setInfo] = useState({})
@@ -29,7 +32,9 @@ const Customers = () => {
 
     const [initialValues, setInitialValues] = useState({
         shopify_cus_id:'',
-        lead_status : ''
+        lead_status : '',
+        engagement_type:'',
+        checklist_notes:''
     });
 
     useEffect(() => {
@@ -105,143 +110,56 @@ const Customers = () => {
                 </Col>
             </Row>
 
-            <Sidebar
-                size='lg'
-                open={open}
-                title={'Edit Customer'}
-                headerClassName='mb-1'
-                contentClassName='pt-0'
-                toggleSidebar={toggleSidebar}
-                style={{ 
-                    width: "35vw", 
-                    maxWidth: "500px" 
-                }}
-            >
-                <Formik
-                    initialValues={initialValues}
-                    enableReinitialize={true}
-                    onSubmit={onSubmit}
-                >
-                    {({ setFieldValue, values }) => (
-                    <Form>                    
-                        <Row>
-                            <Col sm='12'>
-                                <Row className='mb-1'>
-                                    <Label sm='5' className='form-label'>
-                                        <h6>Shopify Customer Id:</h6>
-                                    </Label>
+            <Modal isOpen={open} toggle={() => setOpen(!open)} className='modal-dialog-centered modal-lg'>
+                <ModalHeader className='bg-transparent' toggle={() => setOpen(!open)}>
+                    <span><h5 className='text-center mb-1'>Edit Customer</h5></span>
+                </ModalHeader>
 
-                                    <Col sm='7' className="col-form-label">
-                                        <h6>{info.shopify_cus_id}</h6>
-                                    </Col>
-                                </Row>
-
-                                <Row className='mb-1'>
-                                    <Label sm='5' className='form-label'>
-                                        <h6>Salesforce Lead Id:</h6>
-                                    </Label>
-
-                                    <Col sm='7' className="col-form-label">
-                                        <h6>{info.salesforce_lead_id}</h6>
-                                    </Col>
-                                </Row>
-
-                                <Row className='mb-1'>
-                                    <Label sm='5' className='form-label'>
-                                        <h6>Name:</h6>
-                                    </Label>
-
-                                    <Col sm='7' className="col-form-label">
-                                        <h6>{info.full_name}</h6>
-                                    </Col>
-                                </Row>
-
-                                <Row className='mb-1'>
-                                    <Label sm='5' className='form-label'>
-                                        <h6>Company:</h6>
-                                    </Label>
-
-                                    <Col sm='7' className="col-form-label">
-                                        <h6>{info.lead_company}</h6>
-                                    </Col>
-                                </Row>
-
-                                <Row className='mb-1'>
-                                    <Label sm='5' className='form-label'>
-                                        <h6>Email:</h6>
-                                    </Label>
-
-                                    <Col sm='7' className="col-form-label">
-                                        <h6>{info.lead_email}</h6>
-                                    </Col>
-                                </Row>
-
-                                <Row className='mb-1'>
-                                    <Label sm='5' className='form-label'>
-                                        <h6>Phone:</h6>
-                                    </Label>
-
-                                    <Col sm='7' className="col-form-label">
-                                        <h6>{info.lead_phone}</h6>
-                                    </Col>
-                                </Row>
-
-                                <Row className='mb-1'>
-                                    <Label sm='5' className='form-label'>
-                                        <h6>Lead Source:</h6>
-                                    </Label>
-
-                                    <Col sm='7' className="col-form-label">
-                                        <h6>{leadSourceLabels[info.lead_source] || "Unknown"}</h6>
-                                    </Col>
-                                </Row>
-
-                                <Row className='mb-1'>
-                                    <Label sm='5' className='form-label'>
-                                        <h6>Lead Status:</h6>
-                                    </Label>
-
-                                    <Col sm='7' className="col-form-label">
-                                        <Select
-                                            name="lead_status"
-                                            id="lead_status"
-                                            theme={selectThemeColors}
-                                            className={`react-select`}
-                                            classNamePrefix='select'
-                                            options={leadStatusOptions}
-                                            value={leadStatusOptions.find(opt => opt.value === values.lead_status)}
-                                            onChange={(option) => setFieldValue("lead_status", option.value)}
-                                        />
-                                    </Col>
-                                </Row>
-
-                                <Row>
-                                    <Label sm='5' className='form-label'>
-                                        <h6>Description:</h6>
-                                    </Label>
-                                    
-                                    <Col sm='7' className="col-form-label">
-                                        <h6>{info.lead_description}</h6>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            <Col className='mt-1' sm='12'>
-                                <Button type='submit' className='me-1' color='primary'>
-                                    Save
-                                </Button>
-                                
-                                <Button type='reset' color='secondary' outline onClick={toggleSidebar}>
-                                    Cancel
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Form>
-                    )}
-                </Formik>
-            </Sidebar>
+                <ModalBody className='pb-3 px-sm-3'>
+                    <Formik
+                        initialValues={initialValues}
+                        enableReinitialize={true}
+                        onSubmit={onSubmit}
+                    >
+                        {({ setFieldValue, values, handleSubmit }) => (
+                            <Form>
+                                <Wizard
+                                    ref={ref}
+                                    steps={[
+                                        {
+                                          id: 'details',
+                                          title: 'Details',
+                                          subtitle: 'Customer Details.',
+                                          icon: <User className='font-medium-3' />,
+                                          content: <CustomerDetails stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} />
+                                        },
+                                        {
+                                          id: 'checklist',
+                                          title: 'Checklist',
+                                          subtitle: 'Select Checklist',
+                                          icon: <CheckCircle className='font-medium-3' />,
+                                          content: <Checklist stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} />
+                                        },
+                                        {
+                                          id: 'submit',
+                                          title: 'Submit',
+                                          subtitle: 'Review & Submit',
+                                          icon: <Check className='font-medium-3' />,
+                                          content: <SubmitStep stepper={stepper} values={values} />
+                                        }
+                                    ]}
+                                    type='vertical'
+                                    headerClassName='border-0'
+                                    options={{ linear: false }}
+                                    instance={el => setStepper(el)}
+                                    contentClassName='shadow-none'
+                                    className='bg-transparent create-app-wizard shadow-none'
+                                />    
+                            </Form>
+                        )}  
+                    </Formik>
+                </ModalBody>
+            </Modal>
         </>
     );
 };

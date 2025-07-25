@@ -18,3 +18,10 @@
     cursor: pointer;
 }
 
+[dir] .modal-content {
+    background-color: #fff;
+}
+
+.list-group{
+    --bs-list-group-bg: #fff;
+}
