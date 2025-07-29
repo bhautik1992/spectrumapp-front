@@ -7,11 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCustomers } from '../../services/actions/CustomersAction';
 import {Formik, Form, Field } from 'formik';
 import { CUSTOMER_UPDATE } from '../../services/constants';
-import { User, CheckCircle, Check } from 'react-feather'
+import { User, CheckCircle, Layers } from 'react-feather'
 import Wizard from '@components/wizard'
 import CustomerDetails from './CustomerDetails';
 import Checklist from './Checklist';
-import SubmitStep from './SubmitStep';
+import Diary from './Diary';
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { customersTableColumn } from '../Table/Columns';
@@ -20,6 +20,7 @@ const Customers = () => {
     const ref = useRef(null);
     const dispatch = new useDispatch();
     const { list, total } = useSelector((state) => state.CustomersReducer);
+    const { user } = useSelector((state) => state.LoginReducer);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -31,10 +32,12 @@ const Customers = () => {
     const toggleSidebar = () => setOpen(!open)
 
     const [initialValues, setInitialValues] = useState({
+        loggedin_user_id:user._id,
         shopify_cus_id:'',
         lead_status : '',
         engagement_type:'',
-        checklist_notes:''
+        engagement_note:'',
+        diary:''
     });
 
     useEffect(() => {
@@ -42,16 +45,33 @@ const Customers = () => {
     }, [dispatch, currentPage, rowsPerPage, searchValue]);
 
     const editRecord = (rowData) => {
-        setOpen(!open)
-        setInfo(rowData)
+        (async () => {
+            try {
+                const response = await axiosInstance.get('customer/edit/'+rowData._id);
+                
+                if(response.data.success){
+                    setInitialValues(prevValue => ({
+                        ...prevValue,
+                        ...response.data.data,
+                        engagement_type:response.data.data.engagement_type?.toString(),
+                    }))
 
-        setInitialValues(prevValue => ({
-            ...prevValue,
-            lead_status:rowData.lead_status,
-            shopify_cus_id:rowData.shopify_cus_id,
-            engagement_type:rowData.engagement_option?.toString(),
-            checklist_notes:rowData.engagement_note,
-        }))
+                    setInfo(response.data.data)
+                    setOpen(!open)
+                }
+            } catch (error) {
+                let errorMessage = import.meta.env.VITE_ERROR_MSG;
+    
+                if(error.response){
+                    errorMessage = error.response.data?.message || JSON.stringify(error.response.data); // Case 1: API responded with an error
+                }else if (error.request){
+                    errorMessage = import.meta.env.VITE_NO_RESPONSE; // Case 2: Network error
+                }
+        
+                // console.error(error.message);
+                toast.error(errorMessage);
+            }
+        })();
     };
 
     const onSubmit = async (values) => {
@@ -67,8 +87,6 @@ const Customers = () => {
                     payload:{ 
                         shopify_cus_id: values.shopify_cus_id,
                         lead_status   : values.lead_status,
-                        engagement_type:values.engagement_type,
-                        checklist_notes:values.checklist_notes
                     }
                 })
             }
@@ -114,7 +132,7 @@ const Customers = () => {
                 </Col>
             </Row>
 
-            <Modal isOpen={open} toggle={() => setOpen(!open)} className='modal-dialog-centered modal-lg'>
+            <Modal isOpen={open} toggle={() => setOpen(!open)} className='modal-dialog-centered modal-xl'>
                 <ModalHeader className='bg-transparent' toggle={() => setOpen(!open)}>
                     <span><h5 className='text-center mb-1'>Edit Customer</h5></span>
                 </ModalHeader>
@@ -132,27 +150,27 @@ const Customers = () => {
                                     steps={[
                                         {
                                           id: 'details',
-                                          title: 'Details',
-                                          subtitle: 'Customer Details.',
+                                          title: 'Customer Details',
+                                        //   subtitle: 'Customer Details.',
                                           icon: <User className='font-medium-3' />,
                                           content: <CustomerDetails stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} />
                                         },
                                         {
                                           id: 'checklist',
-                                          title: 'Checklist',
-                                          subtitle: 'Select Checklist',
+                                          title: 'Engagement Checklist',
+                                        //   subtitle: 'Select Checklist',
                                           icon: <CheckCircle className='font-medium-3' />,
-                                          content: <Checklist stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} />
+                                          content: <Checklist stepper={stepper} info={info} values={values} setFieldValue={setFieldValue}  />
                                         },
                                         {
-                                          id: 'submit',
-                                          title: 'Submit',
-                                          subtitle: 'Review & Submit',
-                                          icon: <Check className='font-medium-3' />,
-                                          content: <SubmitStep stepper={stepper} values={values} />
+                                          id: 'diary',
+                                          title: 'Sales & Admin Diary',
+                                        //   subtitle: 'Review & Submit',
+                                          icon: <Layers className='font-medium-3' />,
+                                          content: <Diary stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} />
                                         }
                                     ]}
-                                    type='vertical'
+                                    type='horizontal'
                                     headerClassName='border-0'
                                     options={{ linear: false }}
                                     instance={el => setStepper(el)}

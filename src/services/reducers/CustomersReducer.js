@@ -18,8 +18,6 @@ const CustomersReducer = (state = initialState, action) => {
                 list: state.list.map(list => list.shopify_cus_id === action.payload.shopify_cus_id ? { 
                     ...list,
                     lead_status: action.payload.lead_status,
-                    engagement_option:action.payload.engagement_type,
-                    engagement_note:action.payload.checklist_notes
                 }: list)
             }
         default:

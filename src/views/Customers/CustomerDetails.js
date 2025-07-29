@@ -7,59 +7,57 @@ import { ArrowLeft, ArrowRight } from 'react-feather'
 const CustomerDetails = ({ stepper, info, values, setFieldValue }) => {
     return(
         <>
-            <h5 className='fw-bolder'>Customer Details</h5>
-
             <Row>
-                <Col md='6' sm='12' className='mb-1'>
+                <Col md='3' sm='12' className='mb-1'>
                     <Label className='form-label' for='nameMulti'>
                         <h6>Shopify Customer Id</h6>
                     </Label>
                     <h6>{info.shopify_cus_id}</h6>
                 </Col>
 
-                <Col md='6' sm='12' className='mb-1'>
+                <Col md='3' sm='12' className='mb-1'>
                     <Label className='form-label' for='lastNameMulti'>
                         <h6>Salesforce Lead Id</h6>
                     </Label>
                     <h6>{info.salesforce_lead_id}</h6>
                 </Col>
 
-                <Col md='6' sm='12' className='mb-1'>
+                <Col md='3' sm='12' className='mb-1'>
                     <Label className='form-label' for='lastNameMulti'>
                         <h6>Name</h6>
                     </Label>
                     <h6>{info.full_name}</h6>
                 </Col>
 
-                <Col md='6' sm='12' className='mb-1'>
+                <Col md='3' sm='12' className='mb-1'>
                     <Label className='form-label' for='lastNameMulti'>
                         <h6>Company</h6>
                     </Label>
                     <h6>{info.lead_company}</h6>
                 </Col>
 
-                <Col md='6' sm='12' className='mb-1'>
+                <Col md='3' sm='12' className='mb-1'>
                     <Label className='form-label' for='lastNameMulti'>
                         <h6>Email</h6>
                     </Label>
                     <h6>{info.lead_email}</h6>
                 </Col>
 
-                <Col md='6' sm='12' className='mb-1'>
+                <Col md='3' sm='12' className='mb-1'>
                     <Label className='form-label' for='lastNameMulti'>
                         <h6>Phone</h6>
                     </Label>
                     <h6>{info.lead_phone}</h6>
                 </Col>
 
-                <Col md='6' sm='12' className='mb-1'>
+                <Col md='3' sm='12' className='mb-1'>
                     <Label className='form-label' for='lastNameMulti'>
                         <h6>Lead Source</h6>
                     </Label>
                     <h6>{leadSourceLabels[info.lead_source] || "Unknown"}</h6>
                 </Col>
 
-                <Col md='6' sm='12' className='mb-1'>
+                <Col md='3' sm='12' className='mb-1'>
                     <Label className='form-label' for='lastNameMulti'>
                         <h6>Select Lead Status</h6>
                     </Label>
