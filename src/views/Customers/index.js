@@ -67,6 +67,8 @@ const Customers = () => {
                     payload:{ 
                         shopify_cus_id: values.shopify_cus_id,
                         lead_status   : values.lead_status,
+                        engagement_type:values.engagement_type,
+                        checklist_notes:values.checklist_notes
                     }
                 })
             }
