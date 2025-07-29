@@ -48,7 +48,9 @@ const Customers = () => {
         setInitialValues(prevValue => ({
             ...prevValue,
             lead_status:rowData.lead_status,
-            shopify_cus_id:rowData.shopify_cus_id
+            shopify_cus_id:rowData.shopify_cus_id,
+            engagement_type:rowData.engagement_option?.toString(),
+            checklist_notes:rowData.engagement_note,
         }))
     };
 
