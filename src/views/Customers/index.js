@@ -51,10 +51,13 @@ const Customers = () => {
                 const response = await axiosInstance.get('customer/edit/'+rowData._id);
                 
                 if(response.data.success){
+                    console.log(response.data.data);
+
                     setInitialValues(prevValue => ({
                         ...prevValue,
                         ...response.data.data,
                         engagement_type:response.data.data.engagement_type?.toString(),
+                        engagement_note:response.data.data?.engagement_note || '',
                     }))
 
                     const result = response.data.data.diaries.map(diary => {
