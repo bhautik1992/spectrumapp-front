@@ -1,33 +1,8 @@
 import Timeline from '@components/timeline'
 import { Button, Label, Row, Col } from 'reactstrap'
 import { Field } from 'formik';
-import { ArrowLeft, ArrowRight } from 'react-feather'
-
-const data = [
-    {
-        title: 'User login',
-        content: 'User login at 2:12pm',
-        meta: '12 mins ago'
-    },
-    {
-        title: 'Meeting with john',
-        content: 'React Project meeting with john @10:15am',
-        meta: '45 mins ago',
-        color: 'warning'
-    },
-    {
-        title: 'Create a new react project for client',
-        content: 'Add files to new design folder',
-        meta: '2 days ago',
-        color: 'info'
-    },
-    {
-        title: 'Create Invoices for client',
-        content: 'Create new Invoices and send to Leona Watkins',
-        meta: '12 mins ago',
-        color: 'danger'
-    }
-]
+import { ArrowLeft, ArrowRight, MessageSquare } from 'react-feather'
+import { useState, useEffect } from 'react';
 
 const Diary = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
     return (
@@ -46,7 +21,19 @@ const Diary = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                 </Col>
             </Row>
 
-            <Timeline data={data} className='ms-50' />
+            {(info.diaries.length)?
+                <Timeline data={info.diaries} className='ms-50' />
+            :
+                <div className="text-center mt-4">
+                    <div className="icon-circle mb-2 mx-auto d-flex align-items-center justify-content-center">
+                        <MessageSquare size={32} />
+                    </div>
+
+                    <div className="start-btn px-3 py-1 mx-auto">
+                        Start Conversation
+                    </div>
+                </div>
+            }
 
             <div className='d-flex justify-content-between mt-2'>
                 <Button color='primary' onClick={() => stepper.previous()}>

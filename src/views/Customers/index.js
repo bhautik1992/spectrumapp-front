@@ -12,6 +12,7 @@ import Wizard from '@components/wizard'
 import CustomerDetails from './CustomerDetails';
 import Checklist from './Checklist';
 import Diary from './Diary';
+import moment from 'moment';
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { customersTableColumn } from '../Table/Columns';
@@ -56,6 +57,19 @@ const Customers = () => {
                         engagement_type:response.data.data.engagement_type?.toString(),
                     }))
 
+                    const result = response.data.data.diaries.map(diary => {
+                        const createdAt = moment(diary.createdAt);
+                        const now = moment();
+                        const hoursDiff = now.diff(createdAt, 'hours');
+                    
+                        return {
+                            title: diary.sender_id?.full_name || 'Unknown Sender',
+                            content: diary.message || '',
+                            meta: hoursDiff < 24 ? createdAt.fromNow() : createdAt.format('DD/MM/YYYY')
+                        };
+                    });
+
+                    response.data.data.diaries = result;
                     setInfo(response.data.data)
                     setOpen(!open)
                 }
@@ -132,12 +146,12 @@ const Customers = () => {
                 </Col>
             </Row>
 
-            <Modal isOpen={open} toggle={() => setOpen(!open)} className='modal-dialog-centered modal-xl'>
+            <Modal isOpen={open} toggle={() => setOpen(!open)} className='modal-dialog-centered modal-xl' contentClassName="d-flex flex-column">
                 <ModalHeader className='bg-transparent' toggle={() => setOpen(!open)}>
                     <span><h5 className='text-center mb-1'>Edit Customer</h5></span>
                 </ModalHeader>
 
-                <ModalBody className='pb-3 px-sm-3'>
+                <ModalBody className='pb-3 px-sm-3' style={{ height: '70vh', overflowY: 'auto' }}>
                     <Formik
                         initialValues={initialValues}
                         enableReinitialize={true}
@@ -153,14 +167,14 @@ const Customers = () => {
                                           title: 'Customer Details',
                                         //   subtitle: 'Customer Details.',
                                           icon: <User className='font-medium-3' />,
-                                          content: <CustomerDetails stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} />
+                                          content: <CustomerDetails stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} />
                                         },
                                         {
                                           id: 'checklist',
                                           title: 'Engagement Checklist',
                                         //   subtitle: 'Select Checklist',
                                           icon: <CheckCircle className='font-medium-3' />,
-                                          content: <Checklist stepper={stepper} info={info} values={values} setFieldValue={setFieldValue}  />
+                                          content: <Checklist stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} />
                                         },
                                         {
                                           id: 'diary',

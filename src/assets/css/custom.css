@@ -25,3 +25,22 @@
 .list-group{
     --bs-list-group-bg: #fff;
 }
+
+.icon-circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+.start-btn {
+    display: inline-block;
+    background-color: #fff;
+    color: #333;
+    font-weight: 500;
+    border-radius: 999px;
+    font-size: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+  

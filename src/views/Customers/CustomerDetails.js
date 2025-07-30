@@ -4,7 +4,7 @@ import Select from 'react-select'
 import { selectThemeColors } from '@utils'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 
-const CustomerDetails = ({ stepper, info, values, setFieldValue }) => {
+const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
     return(
         <>
             <Row>
@@ -26,7 +26,7 @@ const CustomerDetails = ({ stepper, info, values, setFieldValue }) => {
                     <Label className='form-label' for='lastNameMulti'>
                         <h6>Name</h6>
                     </Label>
-                    <h6>{info.full_name}</h6>
+                    <h6>{`${info.lead_first_name} ${info.lead_last_name}`}</h6>
                 </Col>
 
                 <Col md='3' sm='12' className='mb-1'>
@@ -75,16 +75,22 @@ const CustomerDetails = ({ stepper, info, values, setFieldValue }) => {
                 </Col>
             </Row>
 
-            <div className='d-flex justify-content-between mt-2'>
+            <div className="d-flex mt-2">
                 <Button color='secondary' outline disabled>
                     <ArrowLeft size={14} className='rotate-rtl align-middle me-sm-50 me-0' />
                     <div className='align-middle d-sm-inline-block d-none'>Previous</div>
                 </Button>
-                
-                <Button color='primary' onClick={() => stepper.next()}>
-                    <div className='align-middle d-sm-inline-block d-none'>Next</div>
-                    <ArrowRight size={14} className='rotate-rtl align-middle ms-sm-50 ms-0' />
-                </Button>
+
+                <div className="ms-auto d-flex gap-1">
+                    <Button color='success' className='btn-submit' onClick={handleSubmit}>
+                        Save & Exit
+                    </Button>
+
+                    <Button color='primary' onClick={() => stepper.next()}>
+                        <div className='align-middle d-sm-inline-block d-none'>Next</div>
+                        <ArrowRight size={14} className='rotate-rtl align-middle ms-sm-50 ms-0' />
+                    </Button>
+                </div>
             </div>
         </>
     )
