@@ -28,6 +28,8 @@ const NoRecord = lazy(() => import("../../views/NoRecord"));
 const NotAuthorized = lazy(() => import("../../views/NotAuthorized"));
 const Home = lazy(() => import("../../views/Home"));
 const Customers = lazy(() => import("../../views/Customers"));
+const CustomerInsights = lazy(() => import("../../views/CustomerInsights"));
+const StockReport = lazy(() => import("../../views/StockReport"));
 const Settings = lazy(() => import("../../views/Settings"));
 
 // ** Merge Routes
@@ -50,6 +52,22 @@ const Routes = [
         element: (
             <PrivateRoute>
                 <Customers />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: "/customer-insights",
+        element: (
+            <PrivateRoute>
+                <CustomerInsights />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: "/stock-report",
+        element: (
+            <PrivateRoute>
+                <StockReport />
             </PrivateRoute>
         ),
     },

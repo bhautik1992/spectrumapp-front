@@ -1,4 +1,4 @@
-import { Users, Home } from "react-feather";
+import { Users, Home, FileText, Grid } from "react-feather";
 
 export default [
     {
@@ -12,5 +12,17 @@ export default [
         title: "Customers",
         icon: <Users size={20} />,
         navLink: "/customers",
+    },
+    {
+        id: "customer_insights",
+        title: "Customer Insights",
+        icon: <FileText size={20} />,
+        navLink: "/customer-insights",
+    },
+    {
+        id: "stock_report",
+        title: "Stock Report",
+        icon: <Grid size={20} />,
+        navLink: "/stock-report",
     },
 ];
