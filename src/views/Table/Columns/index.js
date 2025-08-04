@@ -107,3 +107,19 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
         )
     }
 ];
+
+export const cusInsightsTableColumn = (currentPage, rowsPerPage) => [
+    { 
+        name: "Customer Name",
+        selector: (row) => row.node.displayName, 
+        sortable: true,
+        cell: (row) => (
+            <>
+                {row.node.displayName}
+            </>
+        ),
+        width: "220px"
+    },
+]
+
+

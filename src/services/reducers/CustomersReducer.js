@@ -1,8 +1,9 @@
-import { CUSTOMERS_LIST, CUSTOMER_UPDATE } from '../constants';
+import { CUSTOMERS_LIST, CUSTOMER_UPDATE, SEGMENT_LIST } from '../constants';
 
 const initialState  = {
     list:[],
-    total: 0
+    total: 0,
+    segments:[]
 }
 
 const CustomersReducer = (state = initialState, action) => {
@@ -19,6 +20,11 @@ const CustomersReducer = (state = initialState, action) => {
                     ...list,
                     lead_status: action.payload.lead_status,
                 }: list)
+            }
+        case SEGMENT_LIST:
+            return {
+                ...state,
+                segments: action.data.segments
             }
         default:
             return state
