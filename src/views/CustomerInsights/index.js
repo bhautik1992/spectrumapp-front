@@ -26,12 +26,12 @@ const index = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        const temp = segments.map(({ id, name }) => ({
-            value: id,
-            label: name
-        }));
+        // const temp = segments.map(({ id, name }) => ({
+        //     value: id,
+        //     label: name
+        // }));
 
-        setOptions(temp);
+        // setOptions(temp);
     },[segments]);
 
     const handleSegmentChange = async (selectedOption) => {
