@@ -26,14 +26,11 @@ const index = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        console.log(segments)
-        console.log(segments.length)
         const temp = segments.map(({ id, name }) => ({
             value: id,
             label: name
         }));
         
-        console.log(temp)
         setOptions(temp);
     },[segments]);
 
