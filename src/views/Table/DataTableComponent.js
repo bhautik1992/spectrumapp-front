@@ -4,57 +4,79 @@ import { ChevronDown } from "react-feather";
 import { Input, Row, Col } from 'reactstrap'
 import '@styles/react/libs/tables/react-dataTable-component.scss';
 
-const DataTableComponent = ({ columns, data, total, currentPage, rowsPerPage, searchValue, setCurrentPage, setRowsPerPage, setSearchValue, isExpandable, expandableColumns }) => {
+const DataTableComponent = ({ columns, data, total, currentPage, rowsPerPage, searchValue, setCurrentPage, setRowsPerPage, setSearchValue, isExpandable, expandableColumns,hasPaginateWithNum = true, pageInfo = {} }) => {
+    
     const CustomPagination = () => {
         const count = Math.ceil(total / rowsPerPage)
         
-        return (
-            <ReactPaginate
-                previousLabel={''}
-                nextLabel={''}
-                breakLabel="..."
-                pageCount={Math.ceil(count) || 1}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={2}
-                activeClassName="active"
-                forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-                onPageChange={page => handlePagination(page)}
-                pageClassName='page-item'
-                breakClassName='page-item'
-                nextLinkClassName='page-link'
-                pageLinkClassName='page-link'
-                breakLinkClassName='page-link'
-                previousLinkClassName='page-link'
-                nextClassName='page-item next-item'
-                previousClassName='page-item prev-item'
-                containerClassName={
-                    "pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1"
-                }
-            />
-        );
-    };
+        {return (
+            (hasPaginateWithNum)?
+                <ReactPaginate
+                    previousLabel={''}
+                    nextLabel={''}
+                    breakLabel="..."
+                    pageCount={Math.ceil(count) || 1}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={2}
+                    activeClassName="active"
+                    forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+                    onPageChange={page => handlePagination(page)}
+                    pageClassName='page-item'
+                    breakClassName='page-item'
+                    nextLinkClassName='page-link'
+                    pageLinkClassName='page-link'
+                    breakLinkClassName='page-link'
+                    previousLinkClassName='page-link'
+                    nextClassName='page-item next-item'
+                    previousClassName='page-item prev-item'
+                    containerClassName={
+                        "pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1"
+                    }
+                />
+                :
+                <ReactPaginate
+                    previousLabel="Previous"
+                    nextLabel="Next"
+                    pageCount={Math.ceil(count) || 1}
+                    forcePage={currentPage !== 0 ? currentPage - 1 : 0}
+                    onPageChange={handlePagination}
+                    containerClassName="pagination justify-content-end mt-1"
+                    previousClassName={`page-item ${!pageInfo?.hasPreviousPage ? 'disabled' : ''}`}
+                    nextClassName={`page-item ${!pageInfo?.hasNextPage ? 'disabled' : ''}`}
+                    previousLinkClassName={`page-link ${!pageInfo?.hasPreviousPage ? 'disabled' : ''}`}
+                    nextLinkClassName={`page-link ${!pageInfo?.hasNextPage ? 'disabled' : ''}`}
+                    disabledClassName="disabled"
+                    pageClassName="d-none"
+                    pageLinkClassName="d-none"
+                    breakClassName="d-none"
+                    breakLinkClassName="d-none"
+                    marginPagesDisplayed={0}
+                    pageRangeDisplayed={0}
+                />
+            )}
+        };
 
-    const customStyles = {
-        headCells: {
-            style: {
-                textAlign: 'center',
-                justifyContent: 'center',
+        const customStyles = {
+            headCells: {
+                style: {
+                    textAlign: 'center',
+                    justifyContent: 'center',
+                },
             },
-        },
-    };
+        };
 
-    const handlePagination = (page) => {
-        setCurrentPage(page.selected + 1);
-    };
+        const handlePagination = (page) => {
+            setCurrentPage(page.selected + 1);
+        };
 
-    const handlePerPage = (e) => {
-        setRowsPerPage(parseInt(e.target.value));
-    };
+        const handlePerPage = (e) => {
+            setRowsPerPage(parseInt(e.target.value));
+        };
 
-    const handleSearch = (e) => {
-        setSearchValue(e.target.value);
-        setCurrentPage(1);
-    };
+        const handleSearch = (e) => {
+            setSearchValue(e.target.value);
+            setCurrentPage(1);
+        };
 
     return (
         <>

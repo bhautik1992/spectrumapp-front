@@ -51,8 +51,6 @@ const Customers = () => {
                 const response = await axiosInstance.get('customer/edit/'+rowData._id);
                 
                 if(response.data.success){
-                    console.log(response.data.data);
-
                     setInitialValues(prevValue => ({
                         ...prevValue,
                         ...response.data.data,

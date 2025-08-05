@@ -34,7 +34,6 @@ export const getCustomers = (page = 1, perPage = 10, search = "") => {
 export const getSegmentList = () => {
     return async (dispatch) => {
         try {
-            const options = [];
             const response = await axiosInstance.get('customer/segment/list');
             
             if(response.data.success){
