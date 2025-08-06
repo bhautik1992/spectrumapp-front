@@ -43,4 +43,7 @@
     font-size: 16px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
-  
+
+.mr-2em {
+    margin-right: 1rem;
+}

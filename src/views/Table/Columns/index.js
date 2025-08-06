@@ -1,5 +1,6 @@
 import { leadSourceLabels, leadStatusLabels } from '../../../constants';
 import { Edit } from "react-feather";
+import { Badge } from 'reactstrap'
 
 export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
     // {
@@ -117,9 +118,100 @@ export const cusInsightsTableColumn = (currentPage, rowsPerPage) => [
             <>
                 {row.node.displayName}
             </>
-        ),
+        )
+    },
+    {
+        name: "Phone",
+        selector: (row) => row.node?.defaultPhoneNumber?.phoneNumber || '',
+        sortable: true,
+        cell: (row) => {
+            return (
+                <>
+                    {row.node?.defaultPhoneNumber?.phoneNumber || ''}
+                </>
+            );
+        },
+        width: "170px"
+    },
+    {
+        name: "Email",
+        selector: (row) => row.node?.defaultEmailAddress?.emailAddress || '',
+        sortable: false,
+        cell: (row) => {
+            return (
+                <>
+                    {row.node?.defaultEmailAddress?.emailAddress || ''}
+                </>
+            );
+        }
+    },
+    {
+        name: "Email subscription",
+        selector: (row) => row.node?.defaultEmailAddress?.marketingState || '',
+        sortable: true,
+        cell: (row) => {
+            const marketingState = row.node?.defaultEmailAddress?.marketingState || '';
+            const colorMap = { SUBSCRIBED: 'success', UNSUBSCRIBED: 'warning'};
+            const color = colorMap[marketingState] || 'secondary';
+
+            return (
+                <>
+                    <Badge color={color} className='badge-sm' pill>
+                        {marketingState}
+                    </Badge>
+                </>
+            );
+        },
         width: "220px"
     },
+    {
+        name: "Location",
+        selector: (row) => row.node?.defaultAddress?.city || '',
+        sortable: false,
+        cell: (row) => {
+            const city = row.node?.defaultAddress?.city || '';
+            const country = row.node?.defaultAddress?.country || '';
+            const location = [city, country].filter(Boolean).join(', ');        
+            
+            return (
+                <>
+                    {location}
+                </>
+            );
+        }
+    },
+    {
+        name: "Orders",
+        selector: (row) => row.node?.numberOfOrders || '',
+        sortable: true,
+        cell: (row) => {
+            return (
+                <>
+                    {row.node?.numberOfOrders || ''}
+                </>
+            );
+        },
+        width: "130px"
+    },
+    {
+        name: "Amount Spent",
+        selector: (row) => row.node?.amountSpent?.amount || '',
+        sortable: true,
+        cell: (row) => {
+            const amount = row.node?.amountSpent?.amount || '';
+            const code = row.node?.amountSpent?.currencyCode || '';
+
+            const currencySymbols = {GBP: '£',USD: '$',EUR: '€',INR: '₹'};
+            const symbol = currencySymbols[code] || code;
+
+            return (
+                <>
+                    {amount && code ? `${symbol}${amount}` : ''}
+                </>
+            );
+        },
+        width: "180px"
+    }
 ]
 
 

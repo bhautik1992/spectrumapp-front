@@ -18,7 +18,6 @@ const index = () => {
     const [prevPage, setPrevPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [searchValue, setSearchValue] = useState("");
 
     const [selectedSegment, setSelectedSegment] = useState('');
     const [segmentMember, setSegmentMember] = useState([]);
@@ -39,6 +38,7 @@ const index = () => {
                     const response = await axiosInstance.get('customer/segment/records',{
                         params: { 
                             id:selectedSegment,
+                            perPage: rowsPerPage,
                             before,
                             after,
                             isNext:(currentPage > prevPage)?true:false
@@ -82,11 +82,12 @@ const index = () => {
 
             const response = await axiosInstance.get('customer/segment/records',{
                 params: { 
-                    id: selectedOption.value
+                    id: selectedOption.value,
+                    perPage: rowsPerPage
                 }
             });
             
-            if(response.data.success){ 
+            if(response.data.success){
                 setSegmentMember(response.data.data.members);
                 setPageInfo(response.data.data.pageInfo);
             }
@@ -103,6 +104,12 @@ const index = () => {
             toast.error(errorMessage);
         }
     };
+
+    useEffect(() => {
+        if(selectedSegment != ''){
+            handleSegmentChange({'value':selectedSegment});
+        }
+    },[rowsPerPage]);
 
     return (
         <>
@@ -140,12 +147,11 @@ const index = () => {
                         total={400}
                         currentPage={currentPage}
                         rowsPerPage={rowsPerPage}
-                        searchValue={searchValue}
                         setCurrentPage={setCurrentPage}
                         setRowsPerPage={setRowsPerPage}
-                        setSearchValue={setSearchValue}
                         hasPaginateWithNum={false}
                         pageInfo={pageInfo}
+                        hasSearch={false}
                     />
                 </div>
             </Card>

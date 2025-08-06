@@ -4,7 +4,12 @@ import { ChevronDown } from "react-feather";
 import { Input, Row, Col } from 'reactstrap'
 import '@styles/react/libs/tables/react-dataTable-component.scss';
 
-const DataTableComponent = ({ columns, data, total, currentPage, rowsPerPage, searchValue, setCurrentPage, setRowsPerPage, setSearchValue, isExpandable, expandableColumns,hasPaginateWithNum = true, pageInfo = {} }) => {
+const DataTableComponent = ({ 
+    columns, data, total, currentPage, 
+    rowsPerPage, searchValue, setCurrentPage, 
+    setRowsPerPage, setSearchValue, isExpandable, 
+    expandableColumns,hasPaginateWithNum = true, pageInfo = {}, 
+    hasSearch = true }) => {
     
     const CustomPagination = () => {
         const count = Math.ceil(total / rowsPerPage)
@@ -40,7 +45,7 @@ const DataTableComponent = ({ columns, data, total, currentPage, rowsPerPage, se
                     pageCount={Math.ceil(count) || 1}
                     forcePage={currentPage !== 0 ? currentPage - 1 : 0}
                     onPageChange={handlePagination}
-                    containerClassName="pagination justify-content-end mt-1"
+                    containerClassName="pagination justify-content-end mr-2em mt-1"
                     previousClassName={`page-item ${!pageInfo?.hasPreviousPage ? 'disabled' : ''}`}
                     nextClassName={`page-item ${!pageInfo?.hasNextPage ? 'disabled' : ''}`}
                     previousLinkClassName={`page-link ${!pageInfo?.hasPreviousPage ? 'disabled' : ''}`}
@@ -101,6 +106,7 @@ const DataTableComponent = ({ columns, data, total, currentPage, rowsPerPage, se
                         </div>
                     </Col>
 
+                    {(hasSearch) &&
                     <Col xl='6' className='d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1'>
                         <div className='d-flex align-items-center mb-sm-0 mb-1 me-1'>
                             <label className='mb-0' htmlFor='search-invoice'>
@@ -116,6 +122,7 @@ const DataTableComponent = ({ columns, data, total, currentPage, rowsPerPage, se
                             />
                         </div>
                     </Col>
+                    }
                 </Row>
             </div>
 
