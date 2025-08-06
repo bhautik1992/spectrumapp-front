@@ -6,6 +6,7 @@ import { selectThemeColors } from '@utils'
 import { getSegmentList } from '../../services/actions/CustomersAction';
 import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from  '../../helper/axiosInstance';
+import toast from 'react-hot-toast'
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { cusInsightsTableColumn } from '../Table/Columns';
