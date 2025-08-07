@@ -1,4 +1,4 @@
-import { LOGIN_REQUEST, LOGOUT_REQUEST } from '../constants';
+import { LOGIN_REQUEST, LOGOUT_REQUEST, UPDATE_PROFILE } from '../constants';
 
 const loggedInUser = {
     isAuthenticated: false,
@@ -16,6 +16,14 @@ const LoginReducer = (state = loggedInUser, action) => {
         case LOGOUT_REQUEST:
             localStorage.clear();
             sessionStorage.clear();
+        case UPDATE_PROFILE:
+            return {
+                ...state,
+                user: { 
+                    ...state.user, //Creates a copy of the existing user object
+                    ...action.data //Updates only the modified properties in the copied user object
+                }
+            }
         default:
             return state
     }

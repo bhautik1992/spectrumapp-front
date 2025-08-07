@@ -30,6 +30,7 @@ const Home = lazy(() => import("../../views/Home"));
 const Customers = lazy(() => import("../../views/Customers"));
 const CustomerInsights = lazy(() => import("../../views/CustomerInsights"));
 const StockReport = lazy(() => import("../../views/StockReport"));
+const Profile = lazy(() => import("../../views/Profile"));
 const Settings = lazy(() => import("../../views/Settings"));
 
 // ** Merge Routes
@@ -68,6 +69,14 @@ const Routes = [
         element: (
             <PrivateRoute>
                 <StockReport />
+            </PrivateRoute>
+        ),
+    },
+    {
+        path: "/profile",
+        element: (
+            <PrivateRoute>
+                <Profile />
             </PrivateRoute>
         ),
     },
