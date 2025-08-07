@@ -64,6 +64,7 @@ const Customers = () => {
                         const hoursDiff = now.diff(createdAt, 'hours');
                     
                         return {
+                            icon: <User size={15} style={{ color: diary.sender_id?.color_code || '#ffffff' }} />,
                             title: diary.sender_id?.full_name || 'Unknown Sender',
                             content: diary.message || '',
                             meta: hoursDiff < 24 ? createdAt.fromNow() : createdAt.format('DD/MM/YYYY')
