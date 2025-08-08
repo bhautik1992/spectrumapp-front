@@ -29,6 +29,7 @@ const index = () => {
         dispatch(getSegmentList());
     }, [dispatch]);
 
+    // Navigation
     useEffect(() => {
         if(currentPage > 0){
             (async () => {
@@ -77,6 +78,7 @@ const index = () => {
         setOptions(temp);
     },[segments]);
 
+    // Filter Change
     const handleSegmentChange = async (selectedOption) => {
         try {
             setSelectedSegment(selectedOption.value);
@@ -91,6 +93,7 @@ const index = () => {
             if(response.data.success){
                 setSegmentMember(response.data.data.members);
                 setPageInfo(response.data.data.pageInfo);
+                setCurrentPage(0);
             }
         } catch (error) {
             let errorMessage = import.meta.env.VITE_ERROR_MSG;
@@ -106,6 +109,7 @@ const index = () => {
         }
     };
 
+    // Rows Per Page Change
     useEffect(() => {
         if(selectedSegment != ''){
             handleSegmentChange({'value':selectedSegment});

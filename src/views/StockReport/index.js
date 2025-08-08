@@ -21,7 +21,9 @@ const index = () => {
 
     const [products, setProducts] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
+    const [total , setTotal] = useState(0);
 
+    // Navigation
     useEffect(() => {
         if(currentPage > 0){
             (async () => {
@@ -42,6 +44,7 @@ const index = () => {
                     if(response.data.success){
                         setProducts(response.data.data.products);
                         setPageInfo(response.data.data.pageInfo);
+                        setTotal(response.data.data.total);
                     }
                 } catch (error) {
                     let errorMessage = import.meta.env.VITE_ERROR_MSG;
@@ -61,6 +64,7 @@ const index = () => {
         setPrevPage(currentPage);
     },[currentPage]);
 
+    // Initial Load,Rows Per Page Change, Filter Change
     useEffect(() => {
         (async () => {
             try {
@@ -74,6 +78,8 @@ const index = () => {
                 if(response.data.success){
                     setProducts(response.data.data.products);
                     setPageInfo(response.data.data.pageInfo);
+                    setTotal(response.data.data.total);
+                    setCurrentPage(0);
                 }
             } catch (error) {
                 let errorMessage = import.meta.env.VITE_ERROR_MSG;
@@ -128,7 +134,7 @@ const index = () => {
                     <DataTableComponent
                         columns={stockReportTableColumn(currentPage, rowsPerPage)}
                         data={products}
-                        total={400}
+                        total={total}
                         currentPage={currentPage}
                         rowsPerPage={rowsPerPage}
                         setCurrentPage={setCurrentPage}
