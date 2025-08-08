@@ -294,16 +294,16 @@ export const stockReportTableColumn = (currentPage, rowsPerPage) => [
             </>
         )
     },
-    { 
-        name: "Low Stock",
-        selector: (row) => row.node?.totalInventory || '', 
-        sortable: true,
-        cell: (row) => (
-            <>
-                {(row.node.totalInventory <= lowStockThreshold)?'Low Stock':'Not Low Stock'}
-            </>
-        )
-    },
+    // { 
+    //     name: "Low Stock",
+    //     selector: (row) => row.node?.totalInventory || '', 
+    //     sortable: true,
+    //     cell: (row) => (
+    //         <>
+    //             {(row.node.totalInventory <= lowStockThreshold)?'Low Stock':'Not Low Stock'}
+    //         </>
+    //     )
+    // },
 ]
 
 
