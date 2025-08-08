@@ -85,7 +85,7 @@ const index = () => {
                 toast.error(errorMessage);
             }
         })();
-    },[]);
+    },[rowsPerPage]);
 
     return (
         <>
