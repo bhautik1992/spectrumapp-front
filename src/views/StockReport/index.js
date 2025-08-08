@@ -2,14 +2,90 @@ import { Row, Col, Card, CardHeader, CardBody, CardTitle, Label } from "reactstr
 import { Helmet } from 'react-helmet-async';
 import Select from 'react-select'
 import { selectThemeColors } from '@utils'
+import { useState, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import axiosInstance from  '../../helper/axiosInstance';
+import toast from 'react-hot-toast'
+import { stockReportFilter } from '../../constants';
+
+import DataTableComponent from '../Table/DataTableComponent';
+import { stockReportTableColumn } from '../Table/Columns';
 
 const index = () => {
-    const filterOptions = [
-        { value: '1', label: 'What is low' },
-        { value: '2', label: 'What is selling well' },
-        { value: '3', label: 'What is not selling in the last month' },
-        { value: '4', label: 'What is not selling in the last two month' },
-    ];
+    const dispatch = new useDispatch();
+
+    const [prevPage, setPrevPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
+    const [products, setProducts] = useState([]);
+    const [pageInfo, setPageInfo] = useState({});
+
+    useEffect(() => {
+        if(currentPage > 0){
+            (async () => {
+                try {
+                    const before = pageInfo.startCursor;
+                    const after  = pageInfo.endCursor;
+    
+                    const response = await axiosInstance.get('product',{
+                        params: { 
+                            perPage: rowsPerPage,
+                            before,
+                            after,
+                            isNext:(currentPage > prevPage)?true:false
+                        }
+                    });
+                    
+                    if(response.data.success){
+                        setProducts(response.data.data.products);
+                        setPageInfo(response.data.data.pageInfo);
+                    }
+                } catch (error) {
+                    let errorMessage = import.meta.env.VITE_ERROR_MSG;
+                    
+                    if(error.response){
+                        errorMessage = error.response.data?.message || JSON.stringify(error.response.data); // Case 1: API responded with an error
+                    }else if (error.request){
+                        errorMessage = import.meta.env.VITE_NO_RESPONSE; // Case 2: Network error
+                    }
+    
+                    // console.error(error.message);
+                    toast.error(errorMessage);
+                }
+            })();
+        }
+
+        setPrevPage(currentPage);
+    },[currentPage]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await axiosInstance.get('product',{
+                    params: { 
+                        perPage: rowsPerPage
+                    }
+                });
+                
+                if(response.data.success){
+                    setProducts(response.data.data.products);
+                    setPageInfo(response.data.data.pageInfo);
+                }
+            } catch (error) {
+                let errorMessage = import.meta.env.VITE_ERROR_MSG;
+                
+                if(error.response){
+                    errorMessage = error.response.data?.message || JSON.stringify(error.response.data); // Case 1: API responded with an error
+                }else if (error.request){
+                    errorMessage = import.meta.env.VITE_NO_RESPONSE; // Case 2: Network error
+                }
+        
+                // console.error(error.message);
+                toast.error(errorMessage);
+            }
+        })();
+    },[]);
 
     return (
         <>
@@ -28,7 +104,7 @@ const index = () => {
                             <Label for='role-select'>Sales Performance</Label>
                             <Select
                                 isClearable={false}
-                                options={filterOptions}
+                                options={stockReportFilter}
                                 className='react-select'
                                 classNamePrefix='select'
                                 theme={selectThemeColors}
@@ -36,6 +112,23 @@ const index = () => {
                         </Col>
                     </Row>
                 </CardBody>
+            </Card>
+
+            <Card className='overflow-hidden'>
+                <div className='react-dataTable'>
+                    <DataTableComponent
+                        columns={stockReportTableColumn(currentPage, rowsPerPage)}
+                        data={products}
+                        total={400}
+                        currentPage={currentPage}
+                        rowsPerPage={rowsPerPage}
+                        setCurrentPage={setCurrentPage}
+                        setRowsPerPage={setRowsPerPage}
+                        hasPaginateWithNum={false}
+                        pageInfo={pageInfo}
+                        hasSearch={false}
+                    />
+                </div>
             </Card>
         </>
     );

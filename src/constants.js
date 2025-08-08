@@ -21,4 +21,11 @@ export const leadStatusOptions = [
     { value: 4, label: 'Closed - Not Converted' }
 ];
 
+export const stockReportFilter = [
+    { value: '1', label: 'What is low (Threshold 5)' },
+    { value: '2', label: 'What is selling well' },
+    { value: '3', label: 'What is not selling in the last month' },
+    { value: '4', label: 'What is not selling in the last two month' },
+];
 
+export const lowStockThreshold = 5;

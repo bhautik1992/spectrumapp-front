@@ -1,4 +1,4 @@
-import { leadSourceLabels, leadStatusLabels } from '../../../constants';
+import { leadSourceLabels, leadStatusLabels, lowStockThreshold } from '../../../constants';
 import { Edit } from "react-feather";
 import { Badge } from 'reactstrap'
 
@@ -212,6 +212,98 @@ export const cusInsightsTableColumn = (currentPage, rowsPerPage) => [
         },
         width: "180px"
     }
+]
+
+export const stockReportTableColumn = (currentPage, rowsPerPage) => [
+    { 
+        name: "Product",
+        selector: (row) => row.node.title, 
+        sortable: true,
+        cell: (row) => (
+            <>
+                {row.node.title}
+            </>
+        )
+    },
+    { 
+        name: "Status",
+        selector: (row) => row.node?.status || '', 
+        sortable: true,
+        cell: (row) => {
+            const status = row.node?.status || '';
+            const colorMap = { ACTIVE:'success', DRAFT:'primary', ARCHIVED:'secondary'};
+            const color = colorMap[status] || 'warning';
+
+            return (
+                <>
+                    <Badge color={color} className='badge-sm' pill>
+                        {status}
+                    </Badge>
+                </>
+            );
+        },
+        width: "130px"
+    },
+    { 
+        name: "Inventory",
+        selector: (row) => row.node?.totalInventory, 
+        sortable: true,
+        cell: (row) => {
+            if (!row.node?.tracksInventory) {
+                return 'Inventory not tracked';
+            }
+              
+            const totalInventory = row.node?.totalInventory ?? 0;
+            const hasOnlyDefaultVariant = row.node?.hasOnlyDefaultVariant;
+            const variantsCount = row.node?.variantsCount?.count ?? 0;
+              
+            if (hasOnlyDefaultVariant) {
+                return `${totalInventory} in stock`;
+            }
+              
+            return `${totalInventory} in stock for ${variantsCount} variant${variantsCount > 1 ? 's' : ''}`;
+        }
+    },
+    { 
+        name: "Category",
+        selector: (row) => row.node?.category?.name || '', 
+        sortable: true,
+        cell: (row) => (
+            <>
+                {row.node?.category?.name || ''}
+            </>
+        )
+    },
+    { 
+        name: "Type",
+        selector: (row) => row.node?.productType || '', 
+        sortable: true,
+        cell: (row) => (
+            <>
+                {row.node?.productType || ''}
+            </>
+        )
+    },
+    { 
+        name: "Vendor",
+        selector: (row) => row.node?.vendor || '', 
+        sortable: true,
+        cell: (row) => (
+            <>
+                {row.node?.vendor || ''}
+            </>
+        )
+    },
+    { 
+        name: "Low Stock",
+        selector: (row) => row.node?.totalInventory || '', 
+        sortable: true,
+        cell: (row) => (
+            <>
+                {(row.node.totalInventory <= lowStockThreshold)?'Low Stock':'Not Low Stock'}
+            </>
+        )
+    },
 ]
 
 
