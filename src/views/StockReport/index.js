@@ -17,6 +17,7 @@ const index = () => {
     const [prevPage, setPrevPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [filterVal, setFilterVal] = useState(0);
 
     const [products, setProducts] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
@@ -33,7 +34,8 @@ const index = () => {
                             perPage: rowsPerPage,
                             before,
                             after,
-                            isNext:(currentPage > prevPage)?true:false
+                            isNext:(currentPage > prevPage)?true:false,
+                            filter: filterVal
                         }
                     });
                     
@@ -64,7 +66,8 @@ const index = () => {
             try {
                 const response = await axiosInstance.get('product',{
                     params: { 
-                        perPage: rowsPerPage
+                        perPage: rowsPerPage,
+                        filter: filterVal
                     }
                 });
                 
@@ -85,7 +88,11 @@ const index = () => {
                 toast.error(errorMessage);
             }
         })();
-    },[rowsPerPage]);
+    },[rowsPerPage,filterVal]);
+
+    const handleChange = async (option) => {
+        setFilterVal(option.value);
+    }
 
     return (
         <>
@@ -108,6 +115,8 @@ const index = () => {
                                 className='react-select'
                                 classNamePrefix='select'
                                 theme={selectThemeColors}
+                                onChange={handleChange}
+                                defaultValue={stockReportFilter[0]}
                             />
                         </Col>
                     </Row>
