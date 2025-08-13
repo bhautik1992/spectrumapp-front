@@ -3,9 +3,29 @@ import { leadSourceLabels, leadStatusOptions } from '../../constants';
 import Select from 'react-select'
 import { selectThemeColors } from '@utils'
 import { ArrowLeft, ArrowRight } from 'react-feather'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+const MySwal = withReactContent(Swal);
 
 const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
-    return(
+
+    const handleLeadStatusChange = (option) => {
+        setFieldValue("lead_status", option.value);
+
+        if (option.value === 3) {
+            MySwal.fire({
+                icon: 'warning',
+                text: "Changing the lead status to 'Closed - Converted' will convert this lead into a contact. This change cannot be undone...",
+                customClass: {
+                    confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            })
+        }
+    };
+
+    return (
         <>
             <Row>
                 <Col md='3' sm='12' className='mb-1'>
@@ -61,7 +81,7 @@ const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit })
                     <Label className='form-label' for='lastNameMulti'>
                         <h6>Select Lead Status</h6>
                     </Label>
-                    
+
                     <Select
                         name="lead_status"
                         id="lead_status"
@@ -70,7 +90,8 @@ const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit })
                         classNamePrefix='select'
                         options={leadStatusOptions}
                         value={leadStatusOptions.find(opt => opt.value === values.lead_status)}
-                        onChange={(option) => setFieldValue("lead_status", option.value)}
+                        // onChange={(option) => setFieldValue("lead_status", option.value)}
+                        onChange={handleLeadStatusChange}
                     />
                 </Col>
             </Row>
