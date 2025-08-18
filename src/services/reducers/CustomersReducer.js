@@ -19,6 +19,7 @@ const CustomersReducer = (state = initialState, action) => {
                 list: state.list.map(list => list.shopify_cus_id === action.payload.shopify_cus_id ? { 
                     ...list,
                     lead_status: action.payload.lead_status,
+                    is_lead_converted:action.payload.is_lead_converted,
                 }: list)
             }
         case SEGMENT_LIST:
