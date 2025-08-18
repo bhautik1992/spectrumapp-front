@@ -90,22 +90,33 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
         name: "Status",
         selector: (row) => row.lead_status, 
         sortable: true,
-        cell: (row) => (
-            <>
-                {leadStatusLabels[row.lead_status] || "Unknown"}
-            </>
-        ),
+        cell: (row) => {
+            const colorMap = { 1: 'primary', 2: 'warning', 3: 'success', 4: 'secondary'};
+            const color = colorMap[row.lead_status] || 'secondary';
+
+            return (
+                <>
+                    <Badge color={color} className='badge-sm' pill>
+                        {leadStatusLabels[row.lead_status] || "Unknown"}
+                    </Badge>
+                </>
+            );
+        },
         width: "150px"
     },
     { 
         name: "Actions",
         ignoreRowClick: true,
         allowOverflow: true,
-        cell: (row) => (
-            <div className='d-flex'>
-                <Edit size={18} className="pointer text-primary ms-1" onClick={() => editRecord(row)} />       
-            </div>
-        )
+        cell: (row) => {
+            return(
+                (!row.is_lead_converted) && (
+                    <div className='d-flex'>
+                        <Edit size={18} className="pointer text-primary ms-1" onClick={() => editRecord(row)} />       
+                    </div>
+                )
+            )
+        }
     }
 ];
 
