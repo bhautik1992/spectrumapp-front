@@ -36,7 +36,6 @@ const Customers = () => {
         loggedin_user_id:user._id,
         shopify_cus_id:'',
         lead_status : '',
-        is_lead_converted:false,
         engagement_type:'',
         engagement_note:'',
         diary:''
@@ -102,9 +101,8 @@ const Customers = () => {
                 dispatch({
                     type:CUSTOMER_UPDATE,
                     payload:{ 
-                        shopify_cus_id   : values.shopify_cus_id,
-                        lead_status      : values.lead_status,
-                        is_lead_converted: values.is_lead_converted,
+                        shopify_cus_id: values.shopify_cus_id,
+                        lead_status   : values.lead_status,
                     }
                 })
             }

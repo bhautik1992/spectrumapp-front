@@ -110,7 +110,7 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
         allowOverflow: true,
         cell: (row) => {
             return(
-                (!row.is_lead_converted) && (
+                (row.lead_status != 3) && (
                     <div className='d-flex'>
                         <Edit size={18} className="pointer text-primary ms-1" onClick={() => editRecord(row)} />       
                     </div>
