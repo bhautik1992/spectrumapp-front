@@ -7,6 +7,8 @@ import Layout from "@layouts/VerticalLayout";
 
 // ** Menu Items Array
 import navigation from "@src/navigation/vertical";
+import GlobalSpinner from '../views/GlobalSpinner';
+
 
 const VerticalLayout = (props) => {
     // const [menuData, setMenuData] = useState([])
@@ -22,6 +24,7 @@ const VerticalLayout = (props) => {
                 <div className="content-overlay"></div>
                 <div className="header-navbar-shadow"></div>
                 <div className="container-xxxl p-0">
+                    <GlobalSpinner />
                     <Outlet />
                 </div>
             </div>

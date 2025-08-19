@@ -4,5 +4,7 @@ export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 export const CUSTOMERS_LIST = 'CUSTOMERS_LIST';
 export const CUSTOMER_UPDATE = 'CUSTOMER_UPDATE';
 export const SEGMENT_LIST = 'SEGMENT_LIST';
+export const START_LOADING = 'START_LOADING';
+export const STOP_LOADING = 'STOP_LOADING';
 
 

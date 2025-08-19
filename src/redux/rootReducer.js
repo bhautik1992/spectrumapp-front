@@ -3,6 +3,7 @@ import layout from "./layout";
 import navbar from "./navbar";
 import LoginReducer from "../services/reducers/LoginReducer";
 import CustomersReducer from "../services/reducers/CustomersReducer";
+import LoadingReducer from "../services/reducers/LoadingReducer";
 import { LOGOUT_REQUEST } from "../services/constants";
 
 const appReducer = combineReducers({
@@ -10,6 +11,7 @@ const appReducer = combineReducers({
     layout,
     LoginReducer,
     CustomersReducer,
+    LoadingReducer,
 });
 
 const rootReducer = (state, action) => {
