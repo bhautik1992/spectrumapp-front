@@ -16,7 +16,7 @@ const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit })
         if (option.value === 3) {
             MySwal.fire({
                 icon: 'warning',
-                text: "Changing the lead status to 'Closed - Converted' will convert this lead into a contact. This change cannot be undone...",
+                text: "Changing lead status to Closed – Converted will convert the lead into a contact and the customer into a company. This action cannot be undone.",
                 customClass: {
                     confirmButton: 'btn btn-primary'
                 },
