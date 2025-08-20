@@ -47,3 +47,7 @@
 .mr-2em {
     margin-right: 1rem;
 }
+
+.select__menu {
+    z-index: 9999 !important;
+}

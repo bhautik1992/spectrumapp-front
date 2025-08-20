@@ -147,6 +147,7 @@ const index = () => {
             <Card className='overflow-hidden'>
                 <div className='react-dataTable'>
                     <DataTableComponent
+                        className='react-dataTable'
                         columns={cusInsightsTableColumn(currentPage, rowsPerPage)}
                         data={segmentMember}
                         total={400}

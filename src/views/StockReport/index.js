@@ -132,6 +132,7 @@ const index = () => {
             <Card className='overflow-hidden'>
                 <div className='react-dataTable'>
                     <DataTableComponent
+                        className='react-dataTable'
                         columns={stockReportTableColumn(currentPage, rowsPerPage)}
                         data={products}
                         total={total}
