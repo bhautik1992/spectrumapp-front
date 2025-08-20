@@ -6,36 +6,40 @@ import { useState, useEffect } from 'react';
 
 const Diary = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
     return (
-        <>   
-            <Row className='mt-1'>
-                <Col md='12'>
+        <>  
+            <Row>
+                <Col md='4'>
                     <Field
                         as="textarea"
                         name="diary"
                         id="diary"
-                        rows="5"
+                        rows="16"
                         cols="5"
                         className={"form-control mb-1"}
-                        placeholder={"Enter details about the call or meeting..."}
+                        placeholder={"Enter details about the call, meeting or follow-up..."}
                     />
                 </Col>
+
+                <Col md='8'>
+                    {(info.diaries.length)?
+                        <div style={{ maxHeight: '380px', overflowY: 'auto' }}>
+                            <Timeline data={info.diaries} className='' />
+                        </div>
+                        :
+                        <div className="text-center mt-5">
+                            <div className="icon-circle mb-3 mx-auto d-flex align-items-center justify-content-center">
+                                <MessageSquare size={35} />
+                            </div>
+
+                            <div className="start-btn px-3 py-1 mx-auto">
+                                Start Conversation
+                            </div>
+                        </div>
+                    }
+                </Col>
             </Row>
-
-            {(info.diaries.length)?
-                <Timeline data={info.diaries} className='ms-50' />
-            :
-                <div className="text-center mt-4">
-                    <div className="icon-circle mb-2 mx-auto d-flex align-items-center justify-content-center">
-                        <MessageSquare size={32} />
-                    </div>
-
-                    <div className="start-btn px-3 py-1 mx-auto">
-                        Start Conversation
-                    </div>
-                </div>
-            }
-
-            <div className='d-flex justify-content-between mt-2'>
+            
+            <div className='d-flex justify-content-between mt-3'>
                 <Button color='primary' onClick={() => stepper.previous()}>
                     <ArrowLeft size={14} className='rotate-rtl align-middle me-sm-50 me-0' />
                     <div className='align-middle d-sm-inline-block d-none'>Previous</div>
