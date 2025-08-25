@@ -32,7 +32,6 @@ const Calendar = props => {
         }
     }, [calendarApi])
 
-    // ** calendarOptions(Props)
     const calendarOptions = {
         events: [],
         plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],

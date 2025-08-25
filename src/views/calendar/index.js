@@ -6,6 +6,7 @@ import SidebarLeft from './SidebarLeft'
 import { useRTL } from '@hooks/useRTL'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectEvent, updateEvent } from './store'
+import AddEventSidebar from './AddEventSidebar'
 import '@styles/react/apps/app-calendar.scss'
 
 // ** CalendarColors
@@ -25,7 +26,6 @@ const CalendarComponent = () => {
     const [calendarApi, setCalendarApi] = useState(null)
     const [addSidebarOpen, setAddSidebarOpen] = useState(false)
     const [leftSidebarOpen, setLeftSidebarOpen] = useState(false)
-
 
     const handleAddEventSidebar = () => setAddSidebarOpen(!addSidebarOpen)
     const toggleSidebar = val => setLeftSidebarOpen(val)
@@ -49,11 +49,6 @@ const CalendarComponent = () => {
             calendarApi.refetchEvents()
         }
     }
-
-    // ** Fetch Events On Mount
-    // useEffect(() => {
-    //     dispatch(fetchEvents(store.selectedCalendars))
-    // }, [])
 
     return (
         <Fragment>
@@ -95,19 +90,7 @@ const CalendarComponent = () => {
                 </Row>
             </div>
 
-            {/* <AddEventSidebar
-                store={store}
-                dispatch={dispatch}
-                addEvent={addEvent}
-                open={addSidebarOpen}
-                selectEvent={selectEvent}
-                updateEvent={updateEvent}
-                removeEvent={removeEvent}
-                calendarApi={calendarApi}
-                refetchEvents={refetchEvents}
-                calendarsColor={calendarsColor}
-                handleAddEventSidebar={handleAddEventSidebar}
-            /> */}
+            <AddEventSidebar open={addSidebarOpen} toggleSidebar={handleAddEventSidebar} />
         </Fragment>
     )
 }
