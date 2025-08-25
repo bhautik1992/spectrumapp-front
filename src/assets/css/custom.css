@@ -51,3 +51,9 @@
 .select__menu {
     z-index: 9999 !important;
 }
+
+.app-calendar .app-calendar-sidebar {
+    background-color: #fff !important;
+}
+
+

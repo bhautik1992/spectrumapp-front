@@ -1,4 +1,4 @@
-import { Users, Home, FileText, Grid } from "react-feather";
+import { Users, Home, FileText, Grid, Calendar } from "react-feather";
 
 export default [
     {
@@ -24,5 +24,11 @@ export default [
         title: "Stock Report",
         icon: <Grid size={20} />,
         navLink: "/stock-report",
+    },
+    {
+        id: "calender",
+        title: "Calender",
+        icon: <Calendar size={20} />,
+        navLink: "/calender",
     },
 ];
