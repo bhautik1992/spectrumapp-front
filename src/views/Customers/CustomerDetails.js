@@ -1,14 +1,15 @@
 import { Button, Row, Col, Label } from 'reactstrap'
-import { leadSourceLabels, leadStatusOptions } from '../../constants';
+import { leadSourceLabels, leadStatusOptions, leadStatusLabels } from '../../constants';
 import Select from 'react-select'
 import { selectThemeColors } from '@utils'
 import { Mail, Phone, User, ArrowLeft, ArrowRight } from 'react-feather'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { Badge } from 'reactstrap'
 
 const MySwal = withReactContent(Swal);
 
-const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
+const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit, setOpen }) => {
 
     const handleLeadStatusChange = (option) => {
         setFieldValue("lead_status", option.value);
@@ -39,9 +40,9 @@ const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit })
                         </div>
                     </div>
 
-                    <span className="badge rounded-pill bg-light-secondary text-dark">
+                    <Badge color="secondary" className='badge-sm' pill>
                         {info.lead_company}
-                    </span>
+                    </Badge>
                 </div>
 
                 <Row className="mb-2">
@@ -85,27 +86,39 @@ const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit })
                     <Col md="6" sm="12" className="mb-2">
                         <h6 className="mb-1"><strong>Lead Status</strong></h6>
 
-                        <Select
-                            name="lead_status"
-                            id="lead_status"
-                            theme={selectThemeColors}
-                            className="react-select"
-                            classNamePrefix="select"
-                            options={leadStatusOptions}
-                            value={leadStatusOptions.find(
-                                (opt) => opt.value === values.lead_status
-                            )}
-                            // onChange={(option) => setFieldValue("lead_status", option.value)}
-                            onChange={handleLeadStatusChange}
-                        />
+                        {(values.isClosedConverted)?
+                            <Badge color="success" className='badge-sm' pill>
+                                {leadStatusLabels[values.lead_status] || 'Unknown'}
+                            </Badge>
+                        :
+                            <Select
+                                name="lead_status"
+                                id="lead_status"
+                                theme={selectThemeColors}
+                                className="react-select"
+                                classNamePrefix="select"
+                                options={leadStatusOptions}
+                                value={leadStatusOptions.find(
+                                    (opt) => opt.value === values.lead_status
+                                )}
+                                // onChange={(option) => setFieldValue("lead_status", option.value)}
+                                onChange={handleLeadStatusChange}
+                            />
+                            }
                     </Col>
                 </Row>
             </div>
 
             <div className="d-flex mt-4">
-                <Button color="success" className="btn-submit" onClick={handleSubmit}>
-                    Save & Exit
-                </Button>
+                {values.isClosedConverted ?
+                    <Button color="secondary" className="btn-submit" onClick={() => setOpen(false)}>
+                        Close
+                    </Button>
+                    :
+                    <Button color="success" className="btn-submit" onClick={handleSubmit}>
+                        Save & Exit
+                    </Button>
+                }
 
                 <div className="ms-auto d-flex gap-1">
                     <Button color="primary" onClick={() => stepper.next()}>

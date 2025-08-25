@@ -3,8 +3,9 @@ import { Button, Label, ListGroup, ListGroupItem, Row, Col } from 'reactstrap'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import { Field } from 'formik';
 import { Target,Zap,Trello,CloudSnow,Columns,Repeat,Monitor,Briefcase,Server,Shuffle } from 'react-feather'
+import { leadStatusOptions } from '../../constants';
 
-const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
+const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit, setOpen }) => {
     return (
         <>
             <div className="border rounded p-3">
@@ -30,6 +31,7 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                                                     id="colour_ring"
                                                     value="1"
                                                     className="form-check-input"
+                                                    disabled={values.isClosedConverted}
                                                 />
                                             </span>
                                         </span>
@@ -54,6 +56,7 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                                                     id="tapes_course"
                                                     value="2"
                                                     className="form-check-input"
+                                                    disabled={values.isClosedConverted}
                                                 />
                                             </span>
                                         </span>
@@ -78,6 +81,7 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                                                     id="nanos_course"
                                                     value="3"
                                                     className="form-check-input"
+                                                    disabled={values.isClosedConverted}
                                                 />
                                             </span>
                                         </span>
@@ -102,6 +106,7 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                                                     id="weave_course"
                                                     value="4"
                                                     className="form-check-input"
+                                                    disabled={values.isClosedConverted}
                                                 />
                                             </span>
                                         </span>
@@ -126,6 +131,7 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                                                     id="hair_ext"
                                                     value="5"
                                                     className="form-check-input"
+                                                    disabled={values.isClosedConverted}
                                                 />
                                             </span>
                                         </span>
@@ -150,6 +156,7 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                                                     id="another_brand"
                                                     value="6"
                                                     className="form-check-input"
+                                                    disabled={values.isClosedConverted}
                                                 />
                                             </span>
                                         </span>
@@ -174,6 +181,7 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                                                     id="currently_use"
                                                     value="7"
                                                     className="form-check-input"
+                                                    disabled={values.isClosedConverted}
                                                 />
                                             </span>
                                         </span>
@@ -198,6 +206,7 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                                                     id="persuasion"
                                                     value="8"
                                                     className="form-check-input"
+                                                    disabled={values.isClosedConverted}
                                                 />
                                             </span>
                                         </span>
@@ -222,6 +231,7 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                                                     id="us_before"
                                                     value="9"
                                                     className="form-check-input"
+                                                    disabled={values.isClosedConverted}
                                                 />
                                             </span>
                                         </span>
@@ -246,6 +256,7 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                                                     id="not_interested"
                                                     value="10"
                                                     className="form-check-input"
+                                                    disabled={values.isClosedConverted}
                                                 />
                                             </span>
                                         </span>
@@ -267,6 +278,7 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                             rows="12"
                             cols="5"
                             className={"form-control"}
+                            disabled={values.isClosedConverted}
                         />
                     </Col>
                 </Row>
@@ -279,9 +291,15 @@ const Checklist = ({ stepper, info, values, setFieldValue, handleSubmit }) => {
                 </Button>
 
                 <div className="ms-auto d-flex gap-1">
-                    <Button color='success' className='btn-submit' onClick={handleSubmit}>
-                        Save & Exit
-                    </Button>
+                    {values.isClosedConverted ?
+                        <Button color="secondary" className="btn-submit" onClick={() => setOpen(false)}>
+                            Close
+                        </Button>
+                        :
+                        <Button color='success' className='btn-submit' onClick={handleSubmit}>
+                            Save & Exit
+                        </Button>
+                    }
 
                     <Button color='primary' onClick={() => stepper.next()}>
                         <div className='align-middle d-sm-inline-block d-none'>Next</div>

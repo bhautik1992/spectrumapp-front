@@ -13,6 +13,7 @@ import CustomerDetails from './CustomerDetails';
 import Checklist from './Checklist';
 import Diary from './Diary';
 import moment from 'moment';
+import { leadStatusOptions } from '../../constants';
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { customersTableColumn } from '../Table/Columns';
@@ -38,7 +39,8 @@ const Customers = () => {
         lead_status : '',
         engagement_type:'',
         engagement_note:'',
-        diary:''
+        diary:'',
+        isClosedConverted:false,
     });
 
     useEffect(() => {
@@ -56,6 +58,7 @@ const Customers = () => {
                         ...response.data.data,
                         engagement_type:response.data.data.engagement_type?.toString(),
                         engagement_note:response.data.data?.engagement_note || '',
+                        isClosedConverted: (response.data.data?.lead_status == leadStatusOptions[2].value)?true:false,
                     }))
 
                     const result = response.data.data.diaries.map(diary => {
@@ -169,21 +172,21 @@ const Customers = () => {
                                           title: 'Customer Details',
                                         //   subtitle: 'Customer Details.',
                                           icon: <User className='font-medium-3' />,
-                                          content: <CustomerDetails stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} />
+                                          content: <CustomerDetails stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} setOpen={setOpen} />
                                         },
                                         {
                                           id: 'checklist',
                                           title: 'Engagement Checklist',
                                         //   subtitle: 'Select Checklist',
                                           icon: <CheckCircle className='font-medium-3' />,
-                                          content: <Checklist stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} />
+                                          content: <Checklist stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} setOpen={setOpen} />
                                         },
                                         {
                                           id: 'diary',
                                           title: 'Sales & Admin Diary',
                                         //   subtitle: 'Review & Submit',
                                           icon: <Layers className='font-medium-3' />,
-                                          content: <Diary stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} />
+                                          content: <Diary stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} setOpen={setOpen} />
                                         }
                                     ]}
                                     type='horizontal'
