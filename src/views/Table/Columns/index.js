@@ -231,6 +231,7 @@ export const stockReportTableColumn = (currentPage, rowsPerPage) => [
         cell: (row) => (
             <>
                 {row.node.title}
+                {row.node?.qty || '----'}
             </>
         )
     },
