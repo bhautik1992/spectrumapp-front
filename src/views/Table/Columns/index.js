@@ -223,97 +223,116 @@ export const cusInsightsTableColumn = (currentPage, rowsPerPage) => [
     }
 ]
 
-export const stockReportTableColumn = (currentPage, rowsPerPage) => [
-    { 
-        name: "Product",
-        selector: (row) => row.node.title, 
-        sortable: true,
-        cell: (row) => (
-            <>
-                {row.node.title}
-                {row.node?.qty || '----'}
-            </>
-        )
-    },
-    { 
-        name: "Status",
-        selector: (row) => row.node?.status || '', 
-        sortable: true,
-        cell: (row) => {
-            const status = row.node?.status || '';
-            const colorMap = { ACTIVE:'success', DRAFT:'primary', ARCHIVED:'secondary'};
-            const color = colorMap[status] || 'warning';
-
-            return (
+export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
+    let columns = [
+        { 
+            name: "Product",
+            selector: (row) => row.node.title, 
+            sortable: true,
+            cell: (row) => (
                 <>
-                    <Badge color={color} className='badge-sm' pill>
-                        {status}
-                    </Badge>
+                    {row.node.title}
                 </>
-            );
+            )
         },
-        width: "130px"
-    },
-    { 
-        name: "Inventory",
-        selector: (row) => row.node?.totalInventory, 
-        sortable: true,
-        cell: (row) => {
-            if (!row.node?.tracksInventory) {
-                return 'Inventory not tracked';
+        { 
+            name: "Status",
+            selector: (row) => row.node?.status || '', 
+            sortable: true,
+            cell: (row) => {
+                const status = row.node?.status || '';
+                const colorMap = { ACTIVE:'success', DRAFT:'primary', ARCHIVED:'secondary'};
+                const color = colorMap[status] || 'warning';
+
+                return (
+                    <>
+                        <Badge color={color} className='badge-sm' pill>
+                            {status}
+                        </Badge>
+                    </>
+                );
+            },
+            width: "130px"
+        },
+        { 
+            name: "Inventory",
+            selector: (row) => row.node?.totalInventory, 
+            sortable: true,
+            cell: (row) => {
+                if (!row.node?.tracksInventory) {
+                    return 'Inventory not tracked';
+                }
+                
+                const totalInventory = row.node?.totalInventory ?? 0;
+                const hasOnlyDefaultVariant = row.node?.hasOnlyDefaultVariant;
+                const variantsCount = row.node?.variantsCount?.count ?? 0;
+                
+                if (hasOnlyDefaultVariant) {
+                    return `${totalInventory} in stock`;
+                }
+                
+                return `${totalInventory} in stock for ${variantsCount} variant${variantsCount > 1 ? 's' : ''}`;
             }
-              
-            const totalInventory = row.node?.totalInventory ?? 0;
-            const hasOnlyDefaultVariant = row.node?.hasOnlyDefaultVariant;
-            const variantsCount = row.node?.variantsCount?.count ?? 0;
-              
-            if (hasOnlyDefaultVariant) {
-                return `${totalInventory} in stock`;
-            }
-              
-            return `${totalInventory} in stock for ${variantsCount} variant${variantsCount > 1 ? 's' : ''}`;
+        },
+        { 
+            name: "Category",
+            selector: (row) => row.node?.category?.name || '', 
+            sortable: true,
+            cell: (row) => (
+                <>
+                    {row.node?.category?.name || ''}
+                </>
+            )
+        },
+        { 
+            name: "Type",
+            selector: (row) => row.node?.productType || '', 
+            sortable: true,
+            cell: (row) => (
+                <>
+                    {row.node?.productType || ''}
+                </>
+            )
+        },
+        { 
+            name: "Vendor",
+            selector: (row) => row.node?.vendor || '', 
+            sortable: true,
+            cell: (row) => (
+                <>
+                    {row.node?.vendor || ''}
+                </>
+            )
+        },
+        // { 
+        //     name: "Low Stock",
+        //     selector: (row) => row.node?.totalInventory || '', 
+        //     sortable: true,
+        //     cell: (row) => (
+        //         <>
+        //             {(row.node.totalInventory <= lowStockThreshold)?'Low Stock':'Not Low Stock'}
+        //         </>
+        //     )
+        // },
+    ]
+
+    if (filterVal > 1) {
+        const qtyColumn = {
+            name: "Qty",
+            selector: (row) => row.node?.qty || 0,
+            sortable: true,
+            cell: (row) => row.node?.qty || '0',
+            width: "100px"
         }
-    },
-    { 
-        name: "Category",
-        selector: (row) => row.node?.category?.name || '', 
-        sortable: true,
-        cell: (row) => (
-            <>
-                {row.node?.category?.name || ''}
-            </>
-        )
-    },
-    { 
-        name: "Type",
-        selector: (row) => row.node?.productType || '', 
-        sortable: true,
-        cell: (row) => (
-            <>
-                {row.node?.productType || ''}
-            </>
-        )
-    },
-    { 
-        name: "Vendor",
-        selector: (row) => row.node?.vendor || '', 
-        sortable: true,
-        cell: (row) => (
-            <>
-                {row.node?.vendor || ''}
-            </>
-        )
-    },
-    // { 
-    //     name: "Low Stock",
-    //     selector: (row) => row.node?.totalInventory || '', 
-    //     sortable: true,
-    //     cell: (row) => (
-    //         <>
-    //             {(row.node.totalInventory <= lowStockThreshold)?'Low Stock':'Not Low Stock'}
-    //         </>
-    //     )
-    // },
-]
+
+        columns = [
+            ...columns.slice(0, 2),
+            qtyColumn,
+            ...columns.slice(2)
+        ];
+    }
+
+    return columns;
+}
 
 

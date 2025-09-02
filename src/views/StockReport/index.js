@@ -133,7 +133,7 @@ const index = () => {
                 <div className='react-dataTable'>
                     <DataTableComponent
                         className='react-dataTable'
-                        columns={stockReportTableColumn(currentPage, rowsPerPage)}
+                        columns={stockReportTableColumn(currentPage, rowsPerPage, filterVal)}
                         data={products}
                         total={total}
                         currentPage={currentPage}
