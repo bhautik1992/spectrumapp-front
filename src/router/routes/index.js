@@ -30,7 +30,6 @@ const Home = lazy(() => import("../../views/Home"));
 const Customers = lazy(() => import("../../views/Customers"));
 const CustomerInsights = lazy(() => import("../../views/CustomerInsights"));
 const StockReport = lazy(() => import("../../views/StockReport"));
-const Calender = lazy(() => import("../../views/calendar"));
 const Profile = lazy(() => import("../../views/Profile"));
 const Settings = lazy(() => import("../../views/Settings"));
 
@@ -70,14 +69,6 @@ const Routes = [
         element: (
             <PrivateRoute>
                 <StockReport />
-            </PrivateRoute>
-        ),
-    },
-    {
-        path: "/calender",
-        element: (
-            <PrivateRoute>
-                <Calender />
             </PrivateRoute>
         ),
     },

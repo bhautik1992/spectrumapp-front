@@ -61,23 +61,31 @@ const Diary = ({ stepper, info, values, setFieldValue, handleSubmit, setOpen }) 
                     </>
                 }
             </Row>
-            
-            <div className='d-flex justify-content-between mt-3'>
+
+            <div className="d-flex mt-2">
                 <Button color='primary' onClick={() => stepper.previous()}>
                     <ArrowLeft size={14} className='rotate-rtl align-middle me-sm-50 me-0' />
                     <div className='align-middle d-sm-inline-block d-none'>Previous</div>
                 </Button>
 
-                {values.isClosedConverted ?
-                    <Button color="secondary" className="btn-submit" onClick={() => setOpen(false)}>
-                        Close
+                <div className="ms-auto d-flex gap-1">
+                    {values.isClosedConverted ?
+                        <Button color="secondary" className="btn-submit" onClick={() => setOpen(false)}>
+                            Close
+                        </Button>
+                        :
+                        <Button color='success' className='btn-submit' onClick={handleSubmit}>
+                            Save & Exit
+                        </Button>
+                    }
+
+                    <Button color='primary' onClick={() => stepper.next()}>
+                        <div className='align-middle d-sm-inline-block d-none'>Next</div>
+                        <ArrowRight size={14} className='rotate-rtl align-middle ms-sm-50 ms-0' />
                     </Button>
-                    :
-                    <Button color='success' className='btn-submit' onClick={handleSubmit}>
-                        Save
-                    </Button>                    
-                }
+                </div>
             </div>
+            
         </>
     )
 }

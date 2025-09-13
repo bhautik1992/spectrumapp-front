@@ -5,13 +5,15 @@ import axiosInstance from  '../../helper/axiosInstance';
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from "react-redux";
 import { getCustomers } from '../../services/actions/CustomersAction';
-import {Formik, Form, Field } from 'formik';
+import {Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import { CUSTOMER_UPDATE } from '../../services/constants';
-import { User, CheckCircle, Layers } from 'react-feather'
+import { User, CheckCircle, Layers, Calendar } from 'react-feather'
 import Wizard from '@components/wizard'
 import CustomerDetails from './CustomerDetails';
 import Checklist from './Checklist';
 import Diary from './Diary';
+import Event from './Event';
 import moment from 'moment';
 import { leadStatusOptions } from '../../constants';
 
@@ -40,6 +42,11 @@ const Customers = () => {
         engagement_type:'',
         engagement_note:'',
         diary:'',
+        title:'',
+        date:moment().format('YYYY-MM-DD'),
+        url:'',
+        location:'',
+        description:'',
         isClosedConverted:false,
     });
 
@@ -162,7 +169,7 @@ const Customers = () => {
                         enableReinitialize={true}
                         onSubmit={onSubmit}
                     >
-                        {({ setFieldValue, values, handleSubmit }) => (
+                        {({ setFieldValue, values, handleSubmit, errors, touched }) => (
                             <Form>
                                 <Wizard
                                     ref={ref}
@@ -187,6 +194,13 @@ const Customers = () => {
                                         //   subtitle: 'Review & Submit',
                                           icon: <Layers className='font-medium-3' />,
                                           content: <Diary stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} setOpen={setOpen} />
+                                        },
+                                        {
+                                            id: 'event',
+                                            title: 'Event Planning',
+                                          //   subtitle: 'Event Planning',
+                                            icon: <Calendar className='font-medium-3' />,
+                                            content: <Event stepper={stepper} info={info} values={values} setFieldValue={setFieldValue} handleSubmit={handleSubmit} setOpen={setOpen} />
                                         }
                                     ]}
                                     type='horizontal'

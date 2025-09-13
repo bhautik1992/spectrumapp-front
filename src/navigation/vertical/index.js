@@ -25,10 +25,4 @@ export default [
         icon: <Grid size={20} />,
         navLink: "/stock-report",
     },
-    {
-        id: "calender",
-        title: "Calender",
-        icon: <Calendar size={20} />,
-        navLink: "/calender",
-    },
 ];
