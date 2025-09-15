@@ -1,8 +1,9 @@
 import { Users, Watch, Star, ShieldOff } from 'react-feather'
 import Avatar from '@components/avatar'
 import { Card, CardHeader, CardTitle, CardBody, CardText, Row, Col } from 'reactstrap'
+import Chart from 'react-apexcharts';
 
-const StatsCard = ({ leadStatus }) => {
+const StatsCard = ({ leadStatus, options, series }) => {
     return (
         <Card className='card-statistics'>
             <CardHeader>
@@ -54,6 +55,10 @@ const StatsCard = ({ leadStatus }) => {
                             </div>
                         </div>
                     </Col>
+                </Row>
+
+                <Row className='mt-3'>
+                    <Chart options={options} series={series} type="donut" height={300} />
                 </Row>
             </CardBody>
         </Card>

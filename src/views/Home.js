@@ -9,11 +9,34 @@ import { List } from 'react-feather'
 import { useSelector } from "react-redux";
 import moment from 'moment';
 import { Calendar } from 'react-feather'
+import { leadStatusLabels } from '../constants'
 
 const Home = () => {
     const [leadStatus, setLeadStatus] = useState([]);
     const [eventList, setEventList]   = useState([]);
+    const [series, setSeries] = useState([]);
     const { user } = useSelector((state) => state.LoginReducer);
+
+    const labels = Object.values(leadStatusLabels);
+
+    const options = {
+        chart: {
+            type: 'donut',
+            toolbar: { show: false },
+        },
+        labels,
+        colors: ['#7367f0', '#ff9f43', '#28c76f', '#ea5455'],
+        legend: {
+            position: 'bottom',
+            labels: { colors: '#6e6b7b' }
+        },
+        dataLabels: { enabled: true },
+        tooltip: {
+            y: {
+                formatter: val => `${val} Lead${val !== 1 ? 's' : ''}`
+            }
+        }
+    };
 
     useEffect(() => {
         (async () => {
@@ -22,6 +45,12 @@ const Home = () => {
 
                 if (response.data.success) {
                     setLeadStatus(response.data.data.result);
+
+                    const points = Object.keys(leadStatusLabels).map(key => {
+                        const found = response.data.data.result.find(item => item._id === parseInt(key));
+                        return found ? found.count : 0;
+                    });
+                    setSeries(points);
 
                     const eventResult = response.data.data.events.map(event => {
                         const date = moment(event.date);
@@ -105,7 +134,7 @@ const Home = () => {
 
             <Row>
                 <Col lg='12' sm='12'>
-                    <StatsCard leadStatus={leadStatus} />
+                    <StatsCard leadStatus={leadStatus} options={options} series={series} />
                 </Col>
             </Row>
 
