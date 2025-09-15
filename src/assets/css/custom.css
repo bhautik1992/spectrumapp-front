@@ -56,4 +56,8 @@
     background-color: #fff !important;
 }
 
+.icon-circle::before {
+    content: none !important;
+}
+
 

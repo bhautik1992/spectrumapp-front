@@ -81,7 +81,44 @@ const Customers = () => {
                         };
                     });
 
+                    const eventResult = response.data.data.events.map(event => {
+                        const date = moment(event.date);
+
+                        return {
+                            title: event.title,
+                            meta: date.format('DD/MM/YYYY') || '',
+                            icon: <Calendar size={15} />,
+                            customContent: (
+                                event?.location || event?.url || event?.description ? (
+                                    <div className='d-flex flex-column gap-1 p-1 border rounded bg-light'>
+                                        {event?.location && (
+                                            <div>
+                                                <strong>📍Location:</strong> <span>{event.location}</span>
+                                            </div>
+                                        )}
+
+                                        {event?.url && (
+                                            <div>
+                                                <strong>🔗 URL:</strong>{' '}
+                                                <a href={event.url} target="_blank" rel="noopener noreferrer">
+                                                    {event.url}
+                                                </a>
+                                            </div>
+                                        )}
+
+                                        {event?.description && (
+                                            <div>
+                                                <strong>📝 Description:</strong> <span>{event.description}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : null
+                            )
+                        };
+                    });
+
                     response.data.data.diaries = result;
+                    response.data.data.events  = eventResult;
                     setInfo(response.data.data)
                     setOpen(!open)
                 }
