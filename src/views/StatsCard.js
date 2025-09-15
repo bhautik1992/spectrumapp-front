@@ -7,7 +7,7 @@ const StatsCard = ({ leadStatus, options, series }) => {
     return (
         <Card className='card-statistics'>
             <CardHeader>
-                <CardTitle tag='h4'>Statistics</CardTitle>
+                <CardTitle tag='h4'>Lead Statistics</CardTitle>
             </CardHeader>
 
             <CardBody className='statistics-body'>
