@@ -119,8 +119,21 @@ const Home = () => {
                             </div>
                         </CardHeader>
 
-                        <CardBody>
-                            <Timeline className='ms-50 mb-0' data={eventList} />
+                        <CardBody style={{ maxHeight: eventList.length ? '535px' : 'auto', overflowY: eventList.length ? 'auto' : 'visible' }}>
+                            {eventList && eventList.length > 0 ? (
+                                <Timeline className='ms-50 mb-0' data={eventList} />
+                            ) : (
+                                <div className="text-center py-5">
+                                    <div className="mx-auto mb-3" style={{ fontSize: '3rem', color: '#6c757d' }}>
+                                        📭
+                                    </div>
+
+                                    <h5 className="mb-1">No Events Found</h5>
+                                    <p className="text-muted mb-0">
+                                        There are no upcoming events for this user. Once events are scheduled, they will appear here.
+                                    </p>
+                                </div>
+                            )}
                         </CardBody>
                     </Card>
                 </Col>

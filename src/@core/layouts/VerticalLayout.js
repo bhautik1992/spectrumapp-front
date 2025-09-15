@@ -199,7 +199,8 @@ const VerticalLayout = (props) => {
                     setMenuCollapsed={setMenuCollapsed}
                 />
             ) : null}
-            <footer
+            
+            {/* <footer
                 className={classnames(
                     `footer footer-light ${footerClasses[footerType] || "footer-static"}`,
                     {
@@ -215,7 +216,7 @@ const VerticalLayout = (props) => {
                         footerClasses={footerClasses}
                     />
                 )}
-            </footer>
+            </footer> */}
 
             {themeConfig.layout.scrollTop === true ? (
                 <div className="scroll-to-top">
