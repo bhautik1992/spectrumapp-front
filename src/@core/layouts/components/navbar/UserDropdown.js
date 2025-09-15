@@ -5,10 +5,12 @@ import { UncontrolledDropdown,DropdownMenu,DropdownToggle,DropdownItem } from "r
 import defaultAvatar from "@src/assets/images/portrait/small/default.jpg";
 import { useDispatch } from 'react-redux';
 import { logout } from  '../../../../services/actions/LoginAction';
+import { useSelector } from "react-redux";
 
 const UserDropdown = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { user } = useSelector((state) => state.LoginReducer);
 
     const handleLogout = () => {
         dispatch(logout());
@@ -25,8 +27,8 @@ const UserDropdown = () => {
                 onClick={(e) => e.preventDefault()}
             >
                 <div className="user-nav d-sm-flex d-none">
-                    <span className="user-name fw-bold">John Doe</span>
-                    <span className="user-status">Admin</span>
+                    <span className="user-name fw-bold">{user.full_name}</span>
+                    <span className="user-status">{user.email}</span>
                 </div>
                 <Avatar
                     img={defaultAvatar}
