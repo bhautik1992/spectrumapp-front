@@ -7,12 +7,16 @@ import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from  '../../helper/axiosInstance';
 import toast from 'react-hot-toast'
 import { stockReportFilter } from '../../constants';
+import Flatpickr from 'react-flatpickr'
+import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { stockReportTableColumn } from '../Table/Columns';
 
 const index = () => {
-    const dispatch = new useDispatch();
+    const today     = new Date();
+    const lastMonth = new Date();
+    lastMonth.setMonth(today.getMonth() - 1);
 
     const [prevPage, setPrevPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
@@ -22,6 +26,9 @@ const index = () => {
     const [products, setProducts] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
     const [total , setTotal] = useState(0);
+
+    const [picker, setPicker] = useState([lastMonth, today])
+    const [disDatePicker, setDisDatePicker] = useState(false)
 
     // Navigation
     useEffect(() => {
@@ -37,7 +44,8 @@ const index = () => {
                             before,
                             after,
                             isNext:(currentPage > prevPage)?true:false,
-                            filter: filterVal
+                            filter: filterVal,
+                            picker
                         }
                     });
                     
@@ -67,38 +75,55 @@ const index = () => {
     // Initial Load,Rows Per Page Change, Filter Change
     useEffect(() => {
         (async () => {
-            try {
-                const response = await axiosInstance.get('product',{
-                    params: { 
-                        perPage: rowsPerPage,
-                        filter: filterVal
-                    }
-                });
-                
-                if(response.data.success){
-                    setProducts(response.data.data.products);
-                    setPageInfo(response.data.data.pageInfo);
-                    setTotal(response.data.data.total);
-                    setCurrentPage(0);
-                }
-            } catch (error) {
-                let errorMessage = import.meta.env.VITE_ERROR_MSG;
-                
-                if(error.response){
-                    errorMessage = error.response.data?.message || JSON.stringify(error.response.data); // Case 1: API responded with an error
-                }else if (error.request){
-                    errorMessage = import.meta.env.VITE_NO_RESPONSE; // Case 2: Network error
-                }
-        
-                // console.error(error.message);
-                toast.error(errorMessage);
-            }
+            await fetchProducts();
         })();
     },[rowsPerPage,filterVal]);
+
+    useEffect(() => {
+        (async () => {
+            if (picker && picker.length === 2) {
+                await fetchProducts();
+            }
+        })();
+    },[picker]);
+
+    const fetchProducts = async () => {
+        try {
+            const response = await axiosInstance.get('product',{
+                params: { 
+                    perPage: rowsPerPage,
+                    filter: filterVal,
+                    picker
+                }
+            });
+            
+            if(response.data.success){
+                setProducts(response.data.data.products);
+                setPageInfo(response.data.data.pageInfo);
+                setTotal(response.data.data.total);
+                setCurrentPage(0);
+            }
+        } catch (error) {
+            let errorMessage = import.meta.env.VITE_ERROR_MSG;
+            
+            if(error.response){
+                errorMessage = error.response.data?.message || JSON.stringify(error.response.data); // Case 1: API responded with an error
+            }else if (error.request){
+                errorMessage = import.meta.env.VITE_NO_RESPONSE; // Case 2: Network error
+            }
+    
+            // console.error(error.message);
+            toast.error(errorMessage);
+        }
+    }
 
     const handleChange = async (option) => {
         setFilterVal(option.value);
     }
+
+    useEffect(() => {
+        setDisDatePicker(!['0', '1'].includes(String(filterVal)));
+    },[filterVal])
 
     return (
         <>
@@ -125,6 +150,22 @@ const index = () => {
                                 defaultValue={stockReportFilter[0]}
                             />
                         </Col>
+
+                        {disDatePicker && (
+                            <Col md='4'>
+                                <Label for='role-select'>Select Date</Label>
+                                <Flatpickr
+                                    value={picker}
+                                    id='range-picker'
+                                    className='form-control'
+                                    onChange={date => setPicker(date)}
+                                    options={{
+                                        mode: 'range',
+                                        defaultDate: [lastMonth,today],
+                                    }}
+                                />
+                            </Col>
+                        )}
                     </Row>
                 </CardBody>
             </Card>

@@ -24,10 +24,8 @@ export const leadStatusOptions = [
 export const stockReportFilter = [
     { value: '0', label: 'All' },
     { value: '1', label: 'What is low (Threshold <=5)' },
-    { value: '2', label: 'Selling well in last 1 month' },
-    { value: '3', label: 'Not selling in last 1 month' },
-    { value: '4', label: 'Selling well in last 2 month' },
-    { value: '5', label: 'Not selling in last 2 month' },
+    { value: '2', label: 'Selling well' },
+    { value: '3', label: 'Not selling' },
 ];
 
 export const lowStockThreshold = 5;
