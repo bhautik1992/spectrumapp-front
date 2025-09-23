@@ -87,6 +87,7 @@ const index = () => {
         })();
     },[picker]);
 
+    
     const fetchProducts = async () => {
         try {
             const response = await axiosInstance.get('product',{
