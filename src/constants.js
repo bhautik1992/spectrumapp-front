@@ -5,6 +5,7 @@ export const leadSourceLabels = {
     4: "Purchased - List",
     5: "Other",
     6: "Shopify Registration",
+    7: "Migrate Customer",
 };
 
 export const leadStatusLabels = {
