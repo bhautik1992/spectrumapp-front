@@ -67,9 +67,9 @@ const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit, s
                             <strong>Shopify Customer Id:</strong> {info.shopify_cus_id}
                         </p>
 
-                        <p className="mb-1">
+                        {/* <p className="mb-1">
                             <strong>Salesforce Lead Id:</strong> {info.salesforce_lead_id}
-                        </p>
+                        </p> */}
                     </Col>
                 </Row>
 

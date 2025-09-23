@@ -18,19 +18,19 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
                 {row.shopify_cus_id}
             </>
         ),
-        width: "155px"
+        width: "200px"
     },
-    { 
-        name: "Salesforce Lead Id",
-        selector: (row) => row.salesforce_lead_id, 
-        sortable: true,
-        cell: (row) => (
-            <>
-                {row.salesforce_lead_id}
-            </>
-        ),
-        width: "220px"
-    },
+    // { 
+    //     name: "Salesforce Lead Id",
+    //     selector: (row) => row.salesforce_lead_id, 
+    //     sortable: true,
+    //     cell: (row) => (
+    //         <>
+    //             {row.salesforce_lead_id}
+    //         </>
+    //     ),
+    //     width: "220px"
+    // },
     { 
         name: "Name",
         selector: (row) => row.full_name, 
@@ -40,7 +40,7 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
                 {row.full_name}
             </>
         ),
-        width: "245px"
+        width: "300px"
     },
     { 
         name: "Company",
@@ -62,7 +62,7 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
                 {row.lead_email}
             </>
         ),
-        width: "230px"
+        width: "250px"
     },
     { 
         name: "Phone",
@@ -84,7 +84,7 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
                 {leadSourceLabels[row.lead_source] || "Unknown"}
             </>
         ),
-        width: "150px"
+        width: "200px"
     },
     { 
         name: "Status",
