@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { store } from '../redux/store';
 import { START_LOADING, STOP_LOADING } from '../services/constants';
+import { logout } from '../services/actions/LoginAction';
+import toast from 'react-hot-toast'
 
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -35,13 +37,16 @@ axiosInstance.interceptors.response.use(
         store.dispatch({ type: STOP_LOADING });
 
         if (error.response) {
-            const status = error.response.status;
+            const status  = error.response.status;
             const message = error.response.data?.message || '';
 
             if (status === 401 && (message.includes('Invalid or expired token'))) {
-                store.dispatch({ type: 'LOGOUT_REQUEST' });
+                store.dispatch(logout());
+                toast.error('Your session has expired. Please log in again.');
                 window.location.href = '/login';
             }
+        }else{
+            console.error('Network or server error:', error.message);
         }
 
         return Promise.reject(error);
