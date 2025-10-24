@@ -33,6 +33,18 @@ axiosInstance.interceptors.response.use(
         return response;
     },(error) => {
         store.dispatch({ type: STOP_LOADING });
+
+        if (error.response) {
+            const status = error.response.status;
+            const message = error.response.data?.message || '';
+
+            if (status === 401 && (message.includes('Invalid or expired token'))) {
+                alert('Your session has expired. Please log in again.');
+                // store.dispatch({ type: 'LOGOUT_USER' });
+                // window.location.href = '/login';
+            }
+        }
+
         return Promise.reject(error);
     }
 );
