@@ -39,9 +39,8 @@ axiosInstance.interceptors.response.use(
             const message = error.response.data?.message || '';
 
             if (status === 401 && (message.includes('Invalid or expired token'))) {
-                alert('Your session has expired. Please log in again.');
-                // store.dispatch({ type: 'LOGOUT_USER' });
-                // window.location.href = '/login';
+                store.dispatch({ type: 'LOGOUT_REQUEST' });
+                window.location.href = '/login';
             }
         }
 
