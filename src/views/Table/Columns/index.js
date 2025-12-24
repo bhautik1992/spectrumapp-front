@@ -227,11 +227,11 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
     let columns = [
         { 
             name: "Product",
-            selector: (row) => row.node.title, 
+            selector: (row) => row.node?.title || row.title,
             sortable: true,
             cell: (row) => (
                 <>
-                    {row.node.title}
+                    {row.node?.title || row.title || "—"}
                 </>
             )
         },
@@ -334,5 +334,81 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
 
     return columns;
 }
+
+export const quarterComparisonColumns = [
+    {
+        name: "Product",
+        selector: row => row.title,
+        sortable: true,
+        wrap: true
+    },
+    {
+        name: "Current Quarter Sold Qty",
+        selector: row => row.currentQty,
+        center: true,
+        wrap: true
+    },
+    {
+        name: "Previous Year Quarter Sold Qty",
+        selector: row => row.prevQty,
+        center: true,
+        wrap: true,
+        minWidth: "290px"
+    },
+    {
+        name: "Difference",
+        selector: row => row.difference,
+        center: true,
+        wrap: true
+    },
+    {
+        name: "Percentage Change",
+        center: true,
+        wrap: true,
+        cell: row => {
+            if (row.percentage === null || row.percentage === undefined) {
+                return "—";
+            }
+
+            const value = Number(row.percentage).toFixed(1);
+
+            const color =
+                row.percentage > 0 ? "#28a745" :
+                row.percentage < 0 ? "#dc3545" :
+                "#6c757d";
+
+            return (
+                <span style={{ fontWeight: "bold", color }}>
+                    {value}%
+                </span>
+            );
+        }
+    },
+    {
+        name: "Trend",
+        center: true,
+        wrap: true,
+        cell: row => (
+            <span
+                style={{
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    color:
+                        row.trend === "up"
+                            ? "#28a745"
+                            : row.trend === "down"
+                            ? "#dc3545"
+                            : "#6c757d"
+                }}
+            >
+                {row.trend === "up"
+                    ? "↑"
+                    : row.trend === "down"
+                    ? "↓"
+                    : "–"}
+            </span>
+        )
+    }
+];
 
 

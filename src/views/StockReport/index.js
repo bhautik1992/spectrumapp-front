@@ -11,7 +11,7 @@ import Flatpickr from 'react-flatpickr'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 import DataTableComponent from '../Table/DataTableComponent';
-import { stockReportTableColumn } from '../Table/Columns';
+import { stockReportTableColumn, quarterComparisonColumns } from '../Table/Columns';
 
 const index = () => {
     const today     = new Date();
@@ -123,7 +123,7 @@ const index = () => {
     }
 
     useEffect(() => {
-        setDisDatePicker(!['0', '1'].includes(String(filterVal)));
+        setDisDatePicker(!['0', '1', '4'].includes(String(filterVal)));
     },[filterVal])
 
     return (
@@ -175,7 +175,11 @@ const index = () => {
                 <div className='react-dataTable'>
                     <DataTableComponent
                         className='react-dataTable'
-                        columns={stockReportTableColumn(currentPage, rowsPerPage, filterVal)}
+                        columns={
+                            filterVal == 4
+                                ? quarterComparisonColumns
+                                : stockReportTableColumn(currentPage, rowsPerPage, filterVal)
+                        }
                         data={products}
                         total={total}
                         currentPage={currentPage}
