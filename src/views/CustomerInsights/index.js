@@ -19,6 +19,7 @@ const index = () => {
     const [prevPage, setPrevPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [totalRecords, setTotalRecords] = useState(0);
 
     const [selectedSegment, setSelectedSegment] = useState('');
     const [segmentMember, setSegmentMember] = useState([]);
@@ -93,6 +94,7 @@ const index = () => {
             if(response.data.success){
                 setSegmentMember(response.data.data.members);
                 setPageInfo(response.data.data.pageInfo);
+                setTotalRecords(response.data.data.totalCount);
                 setCurrentPage(0);
             }
         } catch (error) {
@@ -150,7 +152,7 @@ const index = () => {
                         className='react-dataTable'
                         columns={cusInsightsTableColumn(currentPage, rowsPerPage)}
                         data={segmentMember}
-                        total={400}
+                        total={totalRecords}
                         currentPage={currentPage}
                         rowsPerPage={rowsPerPage}
                         setCurrentPage={setCurrentPage}
