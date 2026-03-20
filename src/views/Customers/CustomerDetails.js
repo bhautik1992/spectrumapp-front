@@ -28,7 +28,7 @@ const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit, s
 
     return (
         <>
-            <div className="border rounded p-3">
+            <div className="border rounded p-1">
                 <div className="d-flex justify-content-between align-items-center mb-2">
                     <div className="d-flex align-items-center">
                         <div className="avatar bg-light-primary me-1">
@@ -45,31 +45,75 @@ const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit, s
                     </Badge>
                 </div>
 
-                <Row className="mb-2">
-                    <Col md="6" sm="12" className="mb-2">
-                        <h6 className="mb-1"><strong>Contact Info</strong></h6>
+                <Row className="g-2">
+                    <Col md="6" sm="12">
+                        <div className="p-2 border rounded bg-light h-100">
+                            <div className="mb-2">
+                                <h6 className="fw-bold text-primary mb-1">Contact Info</h6>
 
-                        <p className="mb-1 d-flex align-items-center">
-                            <Mail size={14} className="me-50 text-primary" />
-                            {info.lead_email}
-                        </p>
+                                <p className="mb-1 d-flex align-items-center">
+                                    <Mail size={14} className="me-50 text-primary" />
+                                    {info.lead_email}
+                                </p>
 
-                        <p className="mb-1 d-flex align-items-center">
-                            <Phone size={14} className="me-50 text-success" />
-                            {info.lead_phone}
-                        </p>
+                                <p className="mb-1 d-flex align-items-center">
+                                    <Phone size={14} className="me-50 text-success" />
+                                    {info.lead_phone}
+                                </p>
+                            </div>
+
+                            <hr className="my-2" />
+
+                            <div>
+                                <h6 className="fw-bold text-primary mb-1">Identifiers</h6>
+
+                                <p className="mb-0">
+                                    <strong>Shopify Customer Id:</strong> {info.shopify_cus_id}
+                                </p>
+
+                                {/* <p className="mb-1">
+                                    <strong>Salesforce Lead Id:</strong> {info.salesforce_lead_id}
+                                </p> */}
+                            </div>
+                        </div>
                     </Col>
 
-                    <Col md="6" sm="12" className="mb-2">
-                        <h6 className="mb-1"><strong>Identifiers</strong></h6>
-                        
-                        <p className="mb-1">
-                            <strong>Shopify Customer Id:</strong> {info.shopify_cus_id}
-                        </p>
+                    <Col md="6" sm="12">
+                        <div className="p-2 border rounded bg-light h-100">
+                            <div className="mb-2">
+                                <h6 className="fw-bold text-success mb-1">Customer Activity</h6>
 
-                        {/* <p className="mb-1">
-                            <strong>Salesforce Lead Id:</strong> {info.salesforce_lead_id}
-                        </p> */}
+                                <p className="mb-1">
+                                    <strong>Orders:</strong> {info.orders_count ?? 0}
+                                </p>
+
+                                <p className="mb-1">
+                                    <strong>Amount Spent:</strong> £{info.amount_spent || '0.00'}
+                                </p>
+                            </div>
+
+                            <hr className="my-2" />
+
+                            <div>
+                                <h6 className="fw-bold text-success mb-1">Timeline</h6>
+
+                                <p className="mb-1">
+                                    <strong>Created At:</strong> {info.customer_added_date 
+                                        ? new Date(info.customer_added_date).toLocaleDateString('en-GB', {
+                                            day: '2-digit', month: '2-digit', year: 'numeric'
+                                        }) 
+                                        : '-'}
+                                </p>
+
+                                <p className="mb-0">
+                                    <strong>Last Order:</strong> {info.last_order_date 
+                                        ? new Date(info.last_order_date).toLocaleDateString('en-GB', {
+                                            day: '2-digit', month: '2-digit', year: 'numeric'
+                                        }) 
+                                        : '-'}
+                                </p>
+                            </div>
+                        </div>
                     </Col>
                 </Row>
 
@@ -109,7 +153,7 @@ const CustomerDetails = ({ stepper, info, values, setFieldValue, handleSubmit, s
                 </Row>
             </div>
 
-            <div className="d-flex mt-4">
+            <div className="d-flex mt-1">
                 {values.isClosedConverted ?
                     <Button color="secondary" className="btn-submit" onClick={() => setOpen(false)}>
                         Close

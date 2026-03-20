@@ -9,17 +9,17 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
     //     sortable: false, 
     //     width: "60px" 
     // },
-    { 
-        name: "Shopify CID",
-        selector: (row) => row.shopify_cus_id, 
-        sortable: true,
-        cell: (row) => (
-            <>
-                {row.shopify_cus_id}
-            </>
-        ),
-        width: "200px"
-    },
+    // { 
+    //     name: "Shopify CID",
+    //     selector: (row) => row.shopify_cus_id, 
+    //     sortable: true,
+    //     cell: (row) => (
+    //         <>
+    //             {row.shopify_cus_id}
+    //         </>
+    //     ),
+    //     width: "200px"
+    // },
     // { 
     //     name: "Salesforce Lead Id",
     //     selector: (row) => row.salesforce_lead_id, 
@@ -40,19 +40,19 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
                 {row.full_name}
             </>
         ),
-        width: "300px"
+        width: "250px"
     },
-    { 
-        name: "Company",
-        selector: (row) => row.lead_company, 
-        sortable: true,
-        cell: (row) => (
-            <>
-                {row.lead_company}
-            </>
-        ),
-        width: "200px"
-    },
+    // { 
+    //     name: "Company",
+    //     selector: (row) => row.lead_company, 
+    //     sortable: true,
+    //     cell: (row) => (
+    //         <>
+    //             {row.lead_company}
+    //         </>
+    //     ),
+    //     width: "200px"
+    // },
     { 
         name: "Email",
         selector: (row) => row.lead_email, 
@@ -75,16 +75,60 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
         ),
         width: "150px"
     },
+    // { 
+    //     name: "Source",
+    //     selector: (row) => row.lead_source, 
+    //     sortable: true,
+    //     cell: (row) => (
+    //         <>
+    //             {leadSourceLabels[row.lead_source] || "Unknown"}
+    //         </>
+    //     ),
+    //     width: "200px"
+    // },
     { 
-        name: "Source",
-        selector: (row) => row.lead_source, 
+        name: "Orders",
+        selector: (row) => row.orders_count, 
         sortable: true,
         cell: (row) => (
             <>
-                {leadSourceLabels[row.lead_source] || "Unknown"}
+                {row.orders_count ?? 0}
+            </>
+        ),
+        width: "150px"
+    },
+    { 
+        name: "Amount Spent",
+        selector: (row) => row.amount_spent, 
+        sortable: true,
+        cell: (row) => (
+            <>
+                £{row.amount_spent || '0.00'}
             </>
         ),
         width: "200px"
+    },
+    { 
+        name: "Last Order",
+        selector: (row) => row.last_order_date, 
+        sortable: true,
+        cell: (row) => {
+            if (!row.last_order_date) return '-';
+            const date = new Date(row.last_order_date);
+            return date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        },
+        width: "200px"
+    },
+    { 
+        name: "Created At",
+        selector: (row) => row.customer_added_date, 
+        sortable: true,
+        cell: (row) => {
+            if (!row.customer_added_date) return '-';
+            const date = new Date(row.customer_added_date);
+            return date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        },
+        width: "150px"
     },
     { 
         name: "Status",
