@@ -306,15 +306,53 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
                 if (!row.node?.tracksInventory) {
                     return 'Inventory not tracked';
                 }
-                
+
+                if (String(filterVal) === '1') {
+                    const variants = row.node?.variants?.edges || [];
+
+                    if (row.node?.hasOnlyDefaultVariant) {
+                        const qty = variants[0]?.node?.inventoryQuantity ?? 0;
+                        return `${qty} in stock`;
+                    }
+
+                    const lowStockVariants = variants.filter(
+                        variant =>
+                            (variant.node?.inventoryQuantity ?? 0) <= lowStockThreshold
+                    );
+
+                    return (
+                        <div>
+                            {lowStockVariants.map((variant) => (
+                                <div key={variant.node.id}>
+                                    <strong>{variant.node.title}</strong> - {variant.node.inventoryQuantity}
+                                </div>
+                            ))}
+                        </div>
+                    );
+                }
+
+                if (['2', '3'].includes(String(filterVal))) {
+                    const variants = row.node?.variants?.edges || [];
+
+                    return (
+                        <div>
+                            {variants.map((variant) => (
+                                <div key={variant.node.id}>
+                                    <strong>{variant.node.title}</strong> - {variant.node.inventoryQuantity}
+                                </div>
+                            ))}
+                        </div>
+                    );
+                }
+
                 const totalInventory = row.node?.totalInventory ?? 0;
                 const hasOnlyDefaultVariant = row.node?.hasOnlyDefaultVariant;
                 const variantsCount = row.node?.variantsCount?.count ?? 0;
-                
+
                 if (hasOnlyDefaultVariant) {
                     return `${totalInventory} in stock`;
                 }
-                
+
                 return `${totalInventory} in stock for ${variantsCount} variant${variantsCount > 1 ? 's' : ''}`;
             }
         },
@@ -374,6 +412,39 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
             qtyColumn,
             ...columns.slice(2)
         ];
+
+        if (['2', '3'].includes(String(filterVal))) {
+            const soldVariantColumn = {
+                name: "Variant Sold",
+                minWidth: "250px",
+                sortable: false,
+
+                cell: (row) => {
+                    const soldVariants =
+                        row.node?.soldVariants || [];
+
+                    if (!soldVariants.length) {
+                        return '-';
+                    }
+
+                    return (
+                        <div>
+                            {soldVariants.map((variant) => (
+                                <div key={variant.id}>
+                                    <strong>{variant.title}</strong> - Sold {variant.quantity}
+                                </div>
+                            ))}
+                        </div>
+                    );
+                }
+            };
+
+            columns = [
+                ...columns.slice(0, 3),
+                soldVariantColumn,
+                ...columns.slice(3)
+            ];
+        }
     }
 
     return columns;
