@@ -93,6 +93,12 @@ const Customers = () => {
                                     <div className='d-flex flex-column gap-1 p-1 border rounded bg-light'>
                                         {event?.location && (
                                             <div>
+                                                <strong>👨‍💼Created By:</strong> <span>{event?.user_id?.full_name}</span>
+                                            </div>
+                                        )}
+
+                                        {event?.location && (
+                                            <div>
                                                 <strong>📍Location:</strong> <span>{event.location}</span>
                                             </div>
                                         )}
