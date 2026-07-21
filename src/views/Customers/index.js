@@ -19,6 +19,8 @@ import { leadStatusOptions } from '../../constants';
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { customersTableColumn } from '../Table/Columns';
+import { Download } from 'react-feather';
+import { Spinner } from 'reactstrap';
 
 const Customers = () => {
     const ref = useRef(null);
@@ -30,6 +32,8 @@ const Customers = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [searchValue, setSearchValue] = useState("");
     const [stepper, setStepper] = useState(null)
+    const [exporting, setExporting] = useState(false);
+
     
     const [open, setOpen] = useState(false)
     const [info, setInfo] = useState({})
@@ -49,6 +53,55 @@ const Customers = () => {
         description:'',
         isClosedConverted:false,
     });
+
+    const handleExportCsv = async () => {
+        try {
+            setExporting(true);
+
+            const response = await axiosInstance.get('customer/export', {
+                params: { search: searchValue },
+                responseType: 'blob',
+            });
+
+            const contentType = response.headers?.['content-type'] || 'text/csv;charset=utf-8;';
+            const blob = new Blob([response.data], { type: contentType });
+
+            const contentDisposition = response.headers?.['content-disposition'] || '';
+            const matchedFileName = contentDisposition.match(/filename="?([^";]+)"?/i);
+            const fileName = matchedFileName?.[1] || `customers_${moment().format('YYYY-MM-DD_HH-mm-ss')}.csv`;
+
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            let errorMessage = import.meta.env.VITE_ERROR_MSG;
+
+            if (error.response) {
+                if (error.response.data instanceof Blob) {
+                    try {
+                        const errorText = await error.response.data.text();
+                        const parsedError = JSON.parse(errorText);
+                        errorMessage = parsedError?.message || errorText || errorMessage;
+                    } catch {
+                        errorMessage = import.meta.env.VITE_ERROR_MSG;
+                    }
+                } else {
+                    errorMessage = error.response.data?.message || JSON.stringify(error.response.data);
+                }
+            } else if (error.request) {
+                errorMessage = import.meta.env.VITE_NO_RESPONSE;
+            }
+
+            toast.error(errorMessage);
+        } finally {
+            setExporting(false);
+        }
+    };
 
     useEffect(() => {
         dispatch(getCustomers(currentPage, rowsPerPage, searchValue));
@@ -183,7 +236,28 @@ const Customers = () => {
                 <Col xs={12}>
                     <Card>
                         <CardHeader className='border-bottom'>
-                            <CardTitle tag='h4'>Customers List</CardTitle>
+                            <div className='d-flex align-items-center justify-content-between w-100'>
+                                <CardTitle tag='h4' className='mb-0'>Customers List</CardTitle>
+
+                                <button
+                                    type='button'
+                                    className='btn btn-sm btn-outline-primary d-flex align-items-center gap-50 ms-auto'
+                                    onClick={handleExportCsv}
+                                    disabled={exporting}
+                                >
+                                    {exporting ? (
+                                        <>
+                                            <Spinner size='sm' />
+                                            Exporting...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Download size={16} />
+                                            Export CSV
+                                        </>
+                                    )}
+                                </button>
+                            </div>
                         </CardHeader>
 
                         <DataTableComponent
@@ -197,6 +271,7 @@ const Customers = () => {
                             setRowsPerPage={setRowsPerPage}
                             setSearchValue={setSearchValue}
                         />
+
                     </Card>
                 </Col>
             </Row>
