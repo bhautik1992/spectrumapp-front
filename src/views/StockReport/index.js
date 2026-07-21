@@ -1,6 +1,7 @@
 import { Row, Col, Card, CardHeader, CardBody, CardTitle, Label } from "reactstrap";
 import { Helmet } from 'react-helmet-async';
 import Select from 'react-select'
+import { Download } from 'react-feather';
 import { selectThemeColors } from '@utils'
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +9,7 @@ import axiosInstance from  '../../helper/axiosInstance';
 import toast from 'react-hot-toast'
 import { stockReportFilter } from '../../constants';
 import Flatpickr from 'react-flatpickr'
+import { Spinner } from 'reactstrap';
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 import DataTableComponent from '../Table/DataTableComponent';
@@ -29,6 +31,7 @@ const index = () => {
 
     const [picker, setPicker] = useState([lastMonth, today])
     const [disDatePicker, setDisDatePicker] = useState(false)
+    const [exporting, setExporting] = useState(false)
 
     // Navigation
     useEffect(() => {
@@ -122,6 +125,58 @@ const index = () => {
         setFilterVal(option.value);
     }
 
+    const handleExportCsv = async () => {
+        try {
+            setExporting(true);
+
+            const response = await axiosInstance.get('product/export', {
+                params: {
+                    filter: filterVal,
+                    picker,
+                },
+                responseType: 'blob',
+            });
+
+            const contentType = response.headers?.['content-type'] || 'text/csv;charset=utf-8;';
+            const blob = new Blob([response.data], { type: contentType });
+
+            const contentDisposition = response.headers?.['content-disposition'] || '';
+            const matchedFileName = contentDisposition.match(/filename="?([^";]+)"?/i);
+            const fileName = matchedFileName?.[1] || 'stock_report.csv';
+
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            let errorMessage = import.meta.env.VITE_ERROR_MSG;
+
+            if (error.response) {
+                if (error.response.data instanceof Blob) {
+                    try {
+                        const errorText = await error.response.data.text();
+                        const parsedError = JSON.parse(errorText);
+                        errorMessage = parsedError?.message || errorText || errorMessage;
+                    } catch {
+                        errorMessage = import.meta.env.VITE_ERROR_MSG;
+                    }
+                } else {
+                    errorMessage = error.response.data?.message || JSON.stringify(error.response.data);
+                }
+            } else if (error.request) {
+                errorMessage = import.meta.env.VITE_NO_RESPONSE;
+            }
+
+            toast.error(errorMessage);
+        } finally {
+            setExporting(false);
+        }
+    }
+
     useEffect(() => {
         setDisDatePicker(!['0', '1', '4'].includes(String(filterVal)));
     },[filterVal])
@@ -134,7 +189,28 @@ const index = () => {
 
             <Card>
                 <CardHeader>
-                    <CardTitle tag='h4'>Filters</CardTitle>
+                    <div className='d-flex align-items-center justify-content-between w-100'>
+                        <CardTitle tag='h4' className='mb-0'>Filters</CardTitle>
+
+                        <button
+                            type='button'
+                            className='btn btn-sm btn-outline-primary d-flex align-items-center gap-50 ms-auto'
+                            onClick={handleExportCsv}
+                            disabled={exporting}
+                        >
+                            {exporting ? (
+                                <>
+                                    <Spinner size='sm' />
+                                    Exporting...
+                                </>
+                            ) : (
+                                <>
+                                    <Download size={16} />
+                                    Export CSV
+                                </>
+                            )}
+                        </button>
+                    </div>
                 </CardHeader>
 
                 <CardBody>
