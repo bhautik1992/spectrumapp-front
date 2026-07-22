@@ -248,7 +248,7 @@ const index = () => {
             </Card>
 
             <Card className='overflow-hidden'>
-                <div className='react-dataTable'>
+                <div className='react-dataTable stock-report-table'>
                     <DataTableComponent
                         className='react-dataTable'
                         columns={
@@ -260,6 +260,7 @@ const index = () => {
                         total={total}
                         currentPage={currentPage}
                         rowsPerPage={rowsPerPage}
+                        dense={false}
                         setCurrentPage={setCurrentPage}
                         setRowsPerPage={setRowsPerPage}
                         hasPaginateWithNum={false}

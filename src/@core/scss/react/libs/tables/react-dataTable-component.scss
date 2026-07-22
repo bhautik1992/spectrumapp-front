@@ -124,6 +124,33 @@
   }
 }
 
+// Stock report rows should grow with multi-line inventory/variant content.
+.stock-report-table {
+  .rdt_TableBody {
+    .rdt_TableRow {
+      min-height: 53px;
+      height: auto;
+      align-items: stretch;
+
+      .rdt_TableCell {
+        min-height: 53px;
+        height: auto;
+        align-items: flex-start;
+        padding-top: 0.72rem;
+        padding-bottom: 0.72rem;
+
+        > div {
+          width: 100%;
+          white-space: normal;
+          line-height: 1.35;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+        }
+      }
+    }
+  }
+}
+
 .dark-layout {
   .app-user-list {
     header {
