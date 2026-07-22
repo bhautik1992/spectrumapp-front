@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from  '../../helper/axiosInstance';
 import toast from 'react-hot-toast'
-import { stockReportFilter } from '../../constants';
+import { getStockReportFilter } from '../../constants';
 import Flatpickr from 'react-flatpickr'
 import { Spinner } from 'reactstrap';
 import '@styles/react/libs/flatpickr/flatpickr.scss'
@@ -32,6 +32,7 @@ const index = () => {
     const [picker, setPicker] = useState([lastMonth, today])
     const [disDatePicker, setDisDatePicker] = useState(false)
     const [exporting, setExporting] = useState(false)
+    const stockReportFilter = getStockReportFilter();
 
     // Navigation
     useEffect(() => {

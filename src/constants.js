@@ -38,15 +38,19 @@ const getQuarterLabelWithYears = () => {
     return `${range} ${currentYear} vs ${range} ${previousYear}`;
 };
 
-const quarterLabel = getQuarterLabelWithYears();
+export const getStockReportFilter = () => {
+    const quarterLabel = getQuarterLabelWithYears();
 
-export const stockReportFilter = [
-    { value: '0', label: 'All' },
-    { value: '1', label: 'What is low (Threshold <=5)' },
-    { value: '2', label: 'Selling well' },
-    { value: '3', label: 'Not selling' },
-    { value: '4', label: `Quarterly Comparison (${quarterLabel})` },
-];
+    return [
+        { value: '0', label: 'All' },
+        { value: '1', label: 'What is low (Threshold <=5)' },
+        { value: '2', label: 'Selling well' },
+        { value: '3', label: 'Not selling' },
+        { value: '4', label: `Quarterly Comparison (${quarterLabel})` },
+    ];
+};
+
+export const stockReportFilter = getStockReportFilter();
 
 export const lowStockThreshold = 5;
 
