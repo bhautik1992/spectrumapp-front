@@ -163,9 +163,9 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
 ];
 
 export const cusInsightsTableColumn = (currentPage, rowsPerPage) => [
-    { 
+    {
         name: "Customer Name",
-        selector: (row) => row.node.displayName, 
+        selector: (row) => row.node.displayName,
         sortable: true,
         cell: (row) => (
             <>
@@ -224,8 +224,8 @@ export const cusInsightsTableColumn = (currentPage, rowsPerPage) => [
         cell: (row) => {
             const city = row.node?.defaultAddress?.city || '';
             const country = row.node?.defaultAddress?.country || '';
-            const location = [city, country].filter(Boolean).join(', ');        
-            
+            const location = [city, country].filter(Boolean).join(', ');
+
             return (
                 <>
                     {location}
@@ -245,6 +245,30 @@ export const cusInsightsTableColumn = (currentPage, rowsPerPage) => [
             );
         },
         width: "130px"
+    },
+    {
+        name: "Added Date",
+        selector: (row) => row.node?.createdAt || '',
+        sortable: true,
+        cell: (row) => {
+            const createdAt = row.node?.createdAt;
+            if (!createdAt) return '';
+
+            const date = new Date(createdAt);
+            if (Number.isNaN(date.getTime())) return '';
+
+            const day = String(date.getDate()).padStart(2, '0');
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const month = monthNames[date.getMonth()] || '';
+            const year = date.getFullYear();
+
+            return (
+                <>
+                    {`${day} ${month}, ${year}`}
+                </>
+            );
+        },
+        width: "150px"
     },
     {
         name: "Amount Spent",
