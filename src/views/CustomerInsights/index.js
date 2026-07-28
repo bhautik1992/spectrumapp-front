@@ -262,6 +262,7 @@ const index = () => {
             <Card className='overflow-hidden'>
                 <div className='react-dataTable'>
                     <DataTableComponent
+                        key={`ci-table-${selectedSegment || 'none'}-${currentPage}-${rowsPerPage}`}
                         className='react-dataTable'
                         columns={cusInsightsTableColumn(currentPage, rowsPerPage)}
                         data={segmentMember}
