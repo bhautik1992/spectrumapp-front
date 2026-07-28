@@ -13,6 +13,36 @@ import { Spinner } from 'reactstrap';
 import DataTableComponent from '../Table/DataTableComponent';
 import { cusInsightsTableColumn } from '../Table/Columns';
 
+const formatInsightDate = (value) => {
+    if (!value) return '-';
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '-';
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = monthNames[date.getMonth()] || '';
+    const year = date.getFullYear();
+
+    return `${day} ${month}, ${year}`;
+};
+
+const ExpandableInsightRow = ({ data }) => {
+    const lastPurchasedAt = data?.node?.lastPurchasedAt;
+    const purchasedWhat = data?.node?.purchasedWhat;
+
+    return (
+        <div className='px-2 py-1'>
+            <div className='mb-50'>
+                <strong>Last Purchased:</strong> {formatInsightDate(lastPurchasedAt)}
+            </div>
+            <div>
+                <strong>Purchased What:</strong> {purchasedWhat || '-'}
+            </div>
+        </div>
+    );
+};
+
 const index = () => {
     const dispatch = new useDispatch();
     const { segments } = useSelector((state) => state.CustomersReducer);
@@ -243,6 +273,9 @@ const index = () => {
                         hasPaginateWithNum={false}
                         pageInfo={pageInfo}
                         hasSearch={false}
+                        isExpandable={true}
+                        expandOnRowClicked={false}
+                        expandableColumns={ExpandableInsightRow}
                     />
                 </div>
             </Card>

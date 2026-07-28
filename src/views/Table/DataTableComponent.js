@@ -9,7 +9,7 @@ const DataTableComponent = ({
     rowsPerPage, searchValue, setCurrentPage, 
     setRowsPerPage, setSearchValue, isExpandable, 
     expandableColumns,hasPaginateWithNum = true, pageInfo = {}, 
-    hasSearch = true, dense = true }) => {
+    hasSearch = true, dense = true, expandOnRowClicked = true }) => {
     
     const CustomPagination = () => {
         const count = Math.ceil(total / rowsPerPage)
@@ -144,7 +144,7 @@ const DataTableComponent = ({
                     fixedHeaderScrollHeight="577px"
                     {...(isExpandable && {
                         expandableRows: true,
-                        expandOnRowClicked: true,
+                        expandOnRowClicked,
                         expandableRowsComponent: expandableColumns
                     })}
                 />
