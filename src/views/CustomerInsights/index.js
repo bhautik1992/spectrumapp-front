@@ -58,6 +58,7 @@ const index = () => {
     const [segmentMember, setSegmentMember] = useState([]);
     const [pageInfo, setPageInfo] = useState({});
     const [exporting, setExporting] = useState(false);
+    const [searchValue, setSearchValue] = useState('');
     
     useEffect(() => {
         setSelectedSegment('');
@@ -79,7 +80,8 @@ const index = () => {
                             perPage: rowsPerPage,
                             before,
                             after,
-                            isNext:(currentPage > prevPage)?true:false
+                            isNext:(currentPage > prevPage)?true:false,
+                            search: searchValue
                         }
                     });
                     
@@ -103,7 +105,44 @@ const index = () => {
         }
 
         setPrevPage(currentPage);
-    },[currentPage]);
+    },[currentPage, selectedSegment, rowsPerPage]);
+
+    // Search / initial load for selected segment
+    useEffect(() => {
+        if (!selectedSegment) return;
+
+        (async () => {
+            try {
+                const response = await axiosInstance.get('customer/segment/records', {
+                    params: {
+                        id: selectedSegment,
+                        perPage: rowsPerPage,
+                        search: searchValue,
+                    }
+                });
+
+                if (response.data.success) {
+                    setSegmentMember(response.data.data.members);
+                    setPageInfo(response.data.data.pageInfo);
+                    setTotalRecords(response.data.data.totalCount);
+                    setPrevPage(0);
+                    if (currentPage !== 0) {
+                        setCurrentPage(0);
+                    }
+                }
+            } catch (error) {
+                let errorMessage = import.meta.env.VITE_ERROR_MSG;
+
+                if(error.response){
+                    errorMessage = error.response.data?.message || JSON.stringify(error.response.data);
+                }else if (error.request){
+                    errorMessage = import.meta.env.VITE_NO_RESPONSE;
+                }
+
+                toast.error(errorMessage);
+            }
+        })();
+    }, [searchValue, selectedSegment, rowsPerPage]);
 
     useEffect(() => {
         const temp = segments.map(({ id, name }) => ({
@@ -117,22 +156,10 @@ const index = () => {
     // Filter Change
     const handleSegmentChange = async (selectedOption) => {
         try {
+            setSearchValue('');
             setSelectedSegment(selectedOption.value);
             setSelectedSegmentName(selectedOption.label || 'segment');
-
-            const response = await axiosInstance.get('customer/segment/records',{
-                params: { 
-                    id: selectedOption.value,
-                    perPage: rowsPerPage
-                }
-            });
-            
-            if(response.data.success){
-                setSegmentMember(response.data.data.members);
-                setPageInfo(response.data.data.pageInfo);
-                setTotalRecords(response.data.data.totalCount);
-                setCurrentPage(0);
-            }
+            setCurrentPage(0);
         } catch (error) {
             let errorMessage = import.meta.env.VITE_ERROR_MSG;
             
@@ -204,7 +231,7 @@ const index = () => {
     // Rows Per Page Change
     useEffect(() => {
         if(selectedSegment != ''){
-            handleSegmentChange({'value':selectedSegment});
+            setCurrentPage(0);
         }
     },[rowsPerPage]);
 
@@ -269,11 +296,13 @@ const index = () => {
                         total={totalRecords}
                         currentPage={currentPage}
                         rowsPerPage={rowsPerPage}
+                        searchValue={searchValue}
                         setCurrentPage={setCurrentPage}
                         setRowsPerPage={setRowsPerPage}
+                        setSearchValue={setSearchValue}
                         hasPaginateWithNum={false}
                         pageInfo={pageInfo}
-                        hasSearch={false}
+                        hasSearch={Boolean(selectedSegment) && (totalRecords > 0 || searchValue)}
                         isExpandable={true}
                         expandOnRowClicked={false}
                         expandableColumns={ExpandableInsightRow}

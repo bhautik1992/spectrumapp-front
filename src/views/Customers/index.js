@@ -270,6 +270,7 @@ const Customers = () => {
                             setCurrentPage={setCurrentPage}
                             setRowsPerPage={setRowsPerPage}
                             setSearchValue={setSearchValue}
+                            hasSearch={false}
                         />
 
                     </Card>

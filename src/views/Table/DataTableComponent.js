@@ -80,7 +80,7 @@ const DataTableComponent = ({
 
         const handleSearch = (e) => {
             setSearchValue(e.target.value);
-            setCurrentPage(1);
+            setCurrentPage(0);
         };
 
     return (
