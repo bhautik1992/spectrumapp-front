@@ -13,6 +13,12 @@ import { Spinner } from 'reactstrap';
 import DataTableComponent from '../Table/DataTableComponent';
 import { cusInsightsTableColumn } from '../Table/Columns';
 
+const BIG_SPENDER_SEGMENTS = new Set([
+    'gid://shopify/Segment/1145045680510',
+    'gid://shopify/Segment/1145045713278',
+    'gid://shopify/Segment/1145045746046',
+]);
+
 const formatInsightDate = (value) => {
     if (!value) return '-';
 
@@ -59,6 +65,7 @@ const index = () => {
     const [pageInfo, setPageInfo] = useState({});
     const [exporting, setExporting] = useState(false);
     const [searchValue, setSearchValue] = useState('');
+    const isBigSpenderSegment = BIG_SPENDER_SEGMENTS.has(selectedSegment);
     
     useEffect(() => {
         setSelectedSegment('');
@@ -81,7 +88,8 @@ const index = () => {
                             before,
                             after,
                             isNext:(currentPage > prevPage)?true:false,
-                            search: searchValue
+                            search: searchValue,
+                            segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
                         }
                     });
                     
@@ -118,6 +126,7 @@ const index = () => {
                         id: selectedSegment,
                         perPage: rowsPerPage,
                         search: searchValue,
+                        segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
                     }
                 });
 
@@ -183,7 +192,8 @@ const index = () => {
             const response = await axiosInstance.get('customer/segment/export', {
                 params: {
                     id: selectedSegment,
-                    segmentName: selectedSegmentName || 'segment'
+                    segmentName: selectedSegmentName || 'segment',
+                    segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
                 },
                 responseType: 'blob',
             });
