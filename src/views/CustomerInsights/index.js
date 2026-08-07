@@ -19,6 +19,8 @@ const BIG_SPENDER_SEGMENTS = new Set([
     'gid://shopify/Segment/1145045746046',
 ]);
 
+const ABANDONED_CHECKOUT_SEGMENT_ID = 'gid://shopify/Segment/363996381437';
+
 const formatInsightDate = (value) => {
     if (!value) return '-';
 
@@ -33,18 +35,29 @@ const formatInsightDate = (value) => {
     return `${day} ${month}, ${year}`;
 };
 
-const ExpandableInsightRow = ({ data }) => {
+const ExpandableInsightRow = ({ data, selectedSegment }) => {
     const lastPurchasedAt = data?.node?.lastPurchasedAt;
     const purchasedWhat = data?.node?.purchasedWhat;
+    const abandonedCheckoutDate = data?.node?.abandoned_checkout_date;
+    const abandonedCheckoutProducts = data?.node?.abandoned_checkout_products;
+    const isAbandonedCheckoutSegment = selectedSegment === ABANDONED_CHECKOUT_SEGMENT_ID;
 
     return (
         <div className='px-2 py-1'>
             <div className='mb-50'>
                 <strong>Last Purchased:</strong> {formatInsightDate(lastPurchasedAt)}
             </div>
-            <div>
-                <strong>Purchased What:</strong> {purchasedWhat || '-'}
+            <div className='mb-50'>
+                <strong>Abandoned Checkout:</strong> {formatInsightDate(abandonedCheckoutDate)}
             </div>
+            <div className='mb-50'>
+                <strong>Abandoned What:</strong> {abandonedCheckoutProducts || '-'}
+            </div>
+            {!isAbandonedCheckoutSegment && (
+                <div>
+                    <strong>Purchased What:</strong> {purchasedWhat || '-'}
+                </div>
+            )}
         </div>
     );
 };
@@ -301,7 +314,7 @@ const index = () => {
                     <DataTableComponent
                         key={`ci-table-${selectedSegment || 'none'}-${currentPage}-${rowsPerPage}`}
                         className='react-dataTable'
-                        columns={cusInsightsTableColumn(currentPage, rowsPerPage)}
+                        columns={cusInsightsTableColumn(currentPage, rowsPerPage, selectedSegment)}
                         data={segmentMember}
                         total={totalRecords}
                         currentPage={currentPage}
@@ -315,7 +328,7 @@ const index = () => {
                         hasSearch={Boolean(selectedSegment) && (totalRecords > 0 || searchValue)}
                         isExpandable={true}
                         expandOnRowClicked={false}
-                        expandableColumns={ExpandableInsightRow}
+                        expandableColumns={(props) => <ExpandableInsightRow {...props} selectedSegment={selectedSegment} />}
                     />
                 </div>
             </Card>

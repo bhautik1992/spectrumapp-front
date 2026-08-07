@@ -162,7 +162,26 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
     }
 ];
 
-export const cusInsightsTableColumn = (currentPage, rowsPerPage) => [
+const ABANDONED_CHECKOUT_SEGMENT_ID = 'gid://shopify/Segment/363996381437';
+
+const formatInsightDate = (value) => {
+    if (!value) return '';
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = monthNames[date.getMonth()] || '';
+    const year = date.getFullYear();
+
+    return `${day} ${month}, ${year}`;
+};
+
+export const cusInsightsTableColumn = (currentPage, rowsPerPage, selectedSegment) => {
+    const useAbandonedCheckoutDate = selectedSegment === ABANDONED_CHECKOUT_SEGMENT_ID;
+
+    return [
     {
         name: "Customer Name",
         selector: (row) => row.node.displayName,
@@ -247,24 +266,16 @@ export const cusInsightsTableColumn = (currentPage, rowsPerPage) => [
         width: "130px"
     },
     {
-        name: "Added Date",
-        selector: (row) => row.node?.createdAt || '',
+        name: useAbandonedCheckoutDate ? "Abandoned Checkout Date" : "Added Date",
+        selector: (row) => useAbandonedCheckoutDate ? (row.node?.abandoned_checkout_date || '') : (row.node?.createdAt || ''),
         sortable: true,
         cell: (row) => {
-            const createdAt = row.node?.createdAt;
-            if (!createdAt) return '';
-
-            const date = new Date(createdAt);
-            if (Number.isNaN(date.getTime())) return '';
-
-            const day = String(date.getDate()).padStart(2, '0');
-            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const month = monthNames[date.getMonth()] || '';
-            const year = date.getFullYear();
+            const dateValue = useAbandonedCheckoutDate ? row.node?.abandoned_checkout_date : row.node?.createdAt;
+            const formattedDate = formatInsightDate(dateValue);
 
             return (
                 <>
-                    {`${day} ${month}, ${year}`}
+                    {formattedDate}
                 </>
             );
         },
@@ -289,11 +300,12 @@ export const cusInsightsTableColumn = (currentPage, rowsPerPage) => [
         },
         width: "180px"
     }
-]
+    ];
+};
 
 export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
     let columns = [
-        { 
+        {
             name: "Product",
             selector: (row) => row.node?.title || row.title,
             sortable: true,
@@ -303,13 +315,13 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
                 </>
             )
         },
-        { 
+        {
             name: "Status",
-            selector: (row) => row.node?.status || '', 
+            selector: (row) => row.node?.status || '',
             sortable: true,
             cell: (row) => {
                 const status = row.node?.status || '';
-                const colorMap = { ACTIVE:'success', DRAFT:'primary', ARCHIVED:'secondary'};
+                const colorMap = { ACTIVE: 'success', DRAFT: 'primary', ARCHIVED: 'secondary' };
                 const color = colorMap[status] || 'warning';
 
                 return (
@@ -322,9 +334,9 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
             },
             width: "130px"
         },
-        { 
+        {
             name: "Inventory",
-            selector: (row) => row.node?.totalInventory, 
+            selector: (row) => row.node?.totalInventory,
             sortable: true,
             cell: (row) => {
                 if (!row.node?.tracksInventory) {
@@ -340,8 +352,7 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
                     }
 
                     const lowStockVariants = variants.filter(
-                        variant =>
-                            (variant.node?.inventoryQuantity ?? 0) <= lowStockThreshold
+                        (variant) => (variant.node?.inventoryQuantity ?? 0) <= lowStockThreshold
                     );
 
                     return (
@@ -380,9 +391,9 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
                 return `${totalInventory} in stock for ${variantsCount} variant${variantsCount > 1 ? 's' : ''}`;
             }
         },
-        { 
+        {
             name: "Category",
-            selector: (row) => row.node?.category?.name || '', 
+            selector: (row) => row.node?.category?.name || '',
             sortable: true,
             cell: (row) => (
                 <>
@@ -390,9 +401,9 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
                 </>
             )
         },
-        { 
+        {
             name: "Type",
-            selector: (row) => row.node?.productType || '', 
+            selector: (row) => row.node?.productType || '',
             sortable: true,
             cell: (row) => (
                 <>
@@ -400,9 +411,9 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
                 </>
             )
         },
-        { 
+        {
             name: "Vendor",
-            selector: (row) => row.node?.vendor || '', 
+            selector: (row) => row.node?.vendor || '',
             sortable: true,
             cell: (row) => (
                 <>
@@ -410,17 +421,17 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
                 </>
             )
         },
-        // { 
+        // {
         //     name: "Low Stock",
-        //     selector: (row) => row.node?.totalInventory || '', 
+        //     selector: (row) => row.node?.totalInventory || '',
         //     sortable: true,
         //     cell: (row) => (
         //         <>
-        //             {(row.node.totalInventory <= lowStockThreshold)?'Low Stock':'Not Low Stock'}
+        //             {(row.node.totalInventory <= lowStockThreshold) ? 'Low Stock' : 'Not Low Stock'}
         //         </>
         //     )
         // },
-    ]
+    ];
 
     if (filterVal > 1) {
         const qtyColumn = {
@@ -429,7 +440,7 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
             sortable: true,
             cell: (row) => row.node?.qty || '0',
             width: "100px"
-        }
+        };
 
         columns = [
             ...columns.slice(0, 2),
@@ -442,10 +453,8 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
                 name: "Variant Sold",
                 minWidth: "250px",
                 sortable: false,
-
                 cell: (row) => {
-                    const soldVariants =
-                        row.node?.soldVariants || [];
+                    const soldVariants = row.node?.soldVariants || [];
 
                     if (!soldVariants.length) {
                         return '-';
@@ -472,7 +481,7 @@ export const stockReportTableColumn = (currentPage, rowsPerPage, filterVal) => {
     }
 
     return columns;
-}
+};
 
 export const quarterComparisonColumns = [
     {
