@@ -47,12 +47,16 @@ const ExpandableInsightRow = ({ data, selectedSegment }) => {
             <div className='mb-50'>
                 <strong>Last Purchased:</strong> {formatInsightDate(lastPurchasedAt)}
             </div>
-            <div className='mb-50'>
-                <strong>Abandoned Checkout:</strong> {formatInsightDate(abandonedCheckoutDate)}
-            </div>
-            <div className='mb-50'>
-                <strong>Abandoned What:</strong> {abandonedCheckoutProducts || '-'}
-            </div>
+            {isAbandonedCheckoutSegment && (
+                <div className='mb-50'>
+                    <strong>Abandoned Checkout:</strong> {formatInsightDate(abandonedCheckoutDate)}
+                </div>
+            )}
+            {isAbandonedCheckoutSegment && (
+                <div className='mb-50'>
+                    <strong>Abandoned What:</strong> {abandonedCheckoutProducts || '-'}
+                </div>
+            )}
             {!isAbandonedCheckoutSegment && (
                 <div>
                     <strong>Purchased What:</strong> {purchasedWhat || '-'}
