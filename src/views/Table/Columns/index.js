@@ -1,4 +1,4 @@
-import { leadSourceLabels, leadStatusLabels, lowStockThreshold } from '../../../constants';
+import { leadSourceLabels, leadStatusLabels, lowStockThreshold, ABANDONED_CHECKOUT_SEGMENT_ID } from '../../../constants';
 import { Edit } from "react-feather";
 import { Badge } from 'reactstrap'
 
@@ -161,8 +161,6 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
         }
     }
 ];
-
-const ABANDONED_CHECKOUT_SEGMENT_ID = 'gid://shopify/Segment/363996381437';
 
 const formatInsightDate = (value) => {
     if (!value) return '';

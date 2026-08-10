@@ -22,6 +22,14 @@ export const leadStatusOptions = [
     { value: 4, label: 'Closed - Not Converted' }
 ];
 
+export const BIG_SPENDER_SEGMENT_IDS = [
+    'gid://shopify/Segment/1145045680510',
+    'gid://shopify/Segment/1145045713278',
+    'gid://shopify/Segment/1145045746046',
+];
+
+export const ABANDONED_CHECKOUT_SEGMENT_ID = 'gid://shopify/Segment/363996381437';
+
 const getQuarterLabelWithYears = () => {
     const today        = new Date();
     const month        = today.getMonth() + 1;

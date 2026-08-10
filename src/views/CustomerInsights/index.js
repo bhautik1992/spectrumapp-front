@@ -9,17 +9,12 @@ import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from  '../../helper/axiosInstance';
 import toast from 'react-hot-toast'
 import { Spinner } from 'reactstrap';
+import { BIG_SPENDER_SEGMENT_IDS, ABANDONED_CHECKOUT_SEGMENT_ID } from '../../constants';
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { cusInsightsTableColumn } from '../Table/Columns';
 
-const BIG_SPENDER_SEGMENTS = new Set([
-    'gid://shopify/Segment/1145045680510',
-    'gid://shopify/Segment/1145045713278',
-    'gid://shopify/Segment/1145045746046',
-]);
-
-const ABANDONED_CHECKOUT_SEGMENT_ID = 'gid://shopify/Segment/363996381437';
+const BIG_SPENDER_SEGMENTS = new Set(BIG_SPENDER_SEGMENT_IDS);
 
 const formatInsightDate = (value) => {
     if (!value) return '-';
