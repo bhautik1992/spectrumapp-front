@@ -9,12 +9,40 @@ import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from  '../../helper/axiosInstance';
 import toast from 'react-hot-toast'
 import { Spinner } from 'reactstrap';
-import { BIG_SPENDER_SEGMENT_IDS, ABANDONED_CHECKOUT_SEGMENT_ID } from '../../constants';
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import '@styles/react/libs/flatpickr/flatpickr.scss';
+import { BIG_SPENDER_SEGMENT_IDS, ABANDONED_CHECKOUT_SEGMENT_ID, ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID } from '../../constants';
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { cusInsightsTableColumn } from '../Table/Columns';
 
 const BIG_SPENDER_SEGMENTS = new Set(BIG_SPENDER_SEGMENT_IDS);
+
+const getDefaultTradeAccountsDateRange = () => {
+    const today = new Date();
+    const lastMonth = new Date();
+    lastMonth.setFullYear(today.getFullYear() - 1);
+    return [lastMonth, today];
+};
+
+const formatDateForApi = (date) => {
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+};
+
+const hasCompleteDateRange = (dateRange) =>
+    Array.isArray(dateRange)
+    && dateRange.length === 2
+    && dateRange[0] instanceof Date
+    && !Number.isNaN(dateRange[0].getTime())
+    && dateRange[1] instanceof Date
+    && !Number.isNaN(dateRange[1].getTime());
 
 const formatInsightDate = (value) => {
     if (!value) return '-';
@@ -77,7 +105,11 @@ const index = () => {
     const [pageInfo, setPageInfo] = useState({});
     const [exporting, setExporting] = useState(false);
     const [searchValue, setSearchValue] = useState('');
+    const [picker, setPicker] = useState(getDefaultTradeAccountsDateRange());
     const isBigSpenderSegment = BIG_SPENDER_SEGMENTS.has(selectedSegment);
+    const isActiveTradeAccountsSegment = selectedSegment === ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID;
+    const showDatePicker = isActiveTradeAccountsSegment;
+    const hasValidTradeAccountsRange = !isActiveTradeAccountsSegment || hasCompleteDateRange(picker);
     
     useEffect(() => {
         setSelectedSegment('');
@@ -87,7 +119,7 @@ const index = () => {
 
     // Navigation
     useEffect(() => {
-        if(currentPage > 0){
+        if(currentPage > 0 && hasValidTradeAccountsRange){
             (async () => {
                 try {
                     const before = pageInfo.startCursor;
@@ -101,6 +133,10 @@ const index = () => {
                             after,
                             isNext:(currentPage > prevPage)?true:false,
                             search: searchValue,
+                            ...(isActiveTradeAccountsSegment ? {
+                                fromDate: formatDateForApi(picker?.[0]),
+                                toDate: formatDateForApi(picker?.[1]),
+                            } : {}),
                             segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
                         }
                     });
@@ -125,11 +161,11 @@ const index = () => {
         }
 
         setPrevPage(currentPage);
-    },[currentPage, selectedSegment, rowsPerPage]);
+    },[currentPage, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, searchValue, isActiveTradeAccountsSegment, isBigSpenderSegment, pageInfo, prevPage]);
 
     // Search / initial load for selected segment
     useEffect(() => {
-        if (!selectedSegment) return;
+        if (!selectedSegment || !hasValidTradeAccountsRange) return;
 
         (async () => {
             try {
@@ -138,6 +174,10 @@ const index = () => {
                         id: selectedSegment,
                         perPage: rowsPerPage,
                         search: searchValue,
+                        ...(isActiveTradeAccountsSegment ? {
+                            fromDate: formatDateForApi(picker?.[0]),
+                            toDate: formatDateForApi(picker?.[1]),
+                        } : {}),
                         segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
                     }
                 });
@@ -163,7 +203,7 @@ const index = () => {
                 toast.error(errorMessage);
             }
         })();
-    }, [searchValue, selectedSegment, rowsPerPage]);
+    }, [searchValue, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, isActiveTradeAccountsSegment, isBigSpenderSegment]);
 
     useEffect(() => {
         const temp = segments.map(({ id, name }) => ({
@@ -181,6 +221,10 @@ const index = () => {
             setSelectedSegment(selectedOption.value);
             setSelectedSegmentName(selectedOption.label || 'segment');
             setCurrentPage(0);
+
+            if (selectedOption.value === ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID) {
+                setPicker(getDefaultTradeAccountsDateRange());
+            }
         } catch (error) {
             let errorMessage = import.meta.env.VITE_ERROR_MSG;
             
@@ -197,6 +241,7 @@ const index = () => {
 
     const handleExportCsv = async () => {
         if(!selectedSegment) return;
+        if (isActiveTradeAccountsSegment && !hasValidTradeAccountsRange) return;
 
         try {
             setExporting(true);
@@ -205,6 +250,10 @@ const index = () => {
                 params: {
                     id: selectedSegment,
                     segmentName: selectedSegmentName || 'segment',
+                    ...(isActiveTradeAccountsSegment ? {
+                        fromDate: formatDateForApi(picker?.[0]),
+                        toDate: formatDateForApi(picker?.[1]),
+                    } : {}),
                     segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
                 },
                 responseType: 'blob',
@@ -293,7 +342,7 @@ const index = () => {
 
                 <CardBody>
                     <Row>
-                        <Col md='4'>
+                        <Col md={showDatePicker ? '4' : '4'}>
                             <Label for='role-select'>Select Segment</Label>
                             <Select
                                 isClearable={false}
@@ -304,6 +353,25 @@ const index = () => {
                                 onChange={handleSegmentChange}
                             />
                         </Col>
+
+                        {showDatePicker && (
+                            <Col md='4'>
+                                <Label for='date-range-picker'>Select Date</Label>
+                                <Flatpickr
+                                    value={picker}
+                                    id='date-range-picker'
+                                    className='form-control'
+                                    onChange={(date) => {
+                                        setPicker(date);
+                                        setCurrentPage(0);
+                                    }}
+                                    options={{
+                                        mode: 'range',
+                                        defaultDate: getDefaultTradeAccountsDateRange(),
+                                    }}
+                                />
+                            </Col>
+                        )}
                     </Row>
                 </CardBody>
             </Card>
