@@ -164,14 +164,13 @@ export const customersTableColumn = (currentPage, rowsPerPage, editRecord) => [
 
 const formatInsightDate = (value) => {
     if (!value) return '';
-
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return '';
 
-    const day = String(date.getDate()).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const month = monthNames[date.getMonth()] || '';
-    const year = date.getFullYear();
+    const month = monthNames[date.getUTCMonth()] || '';
+    const year = date.getUTCFullYear();
 
     return `${day} ${month}, ${year}`;
 };

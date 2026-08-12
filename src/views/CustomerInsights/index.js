@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Row, Col, Card, CardHeader, CardBody, CardTitle, Label } from "reactstrap";
 import { Helmet } from 'react-helmet-async';
 import Select from 'react-select'
@@ -12,7 +12,7 @@ import { Spinner } from 'reactstrap';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import '@styles/react/libs/flatpickr/flatpickr.scss';
-import { BIG_SPENDER_SEGMENT_IDS, ABANDONED_CHECKOUT_SEGMENT_ID, ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID } from '../../constants';
+import { BIG_SPENDER_SEGMENT_IDS, ABANDONED_CHECKOUT_SEGMENT_ID, ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID, TRADE_ACCOUNT_NEVER_ORDERED_SEGMENT_ID, TRADE_ACCOUNT_ONCE_ORDERED_SEGMENT_ID } from '../../constants';
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { cusInsightsTableColumn } from '../Table/Columns';
@@ -28,10 +28,9 @@ const getDefaultTradeAccountsDateRange = () => {
 
 const formatDateForApi = (date) => {
     if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
 };
@@ -50,12 +49,17 @@ const formatInsightDate = (value) => {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return '-';
 
-    const day = String(date.getDate()).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const month = monthNames[date.getMonth()] || '';
-    const year = date.getFullYear();
+    const month = monthNames[date.getUTCMonth()] || '';
+    const year = date.getUTCFullYear();
 
     return `${day} ${month}, ${year}`;
+};
+
+const normalizeToUtcMidnight = (date) => {
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) return null;
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
 };
 
 const ExpandableInsightRow = ({ data, selectedSegment }) => {
@@ -90,11 +94,12 @@ const ExpandableInsightRow = ({ data, selectedSegment }) => {
 };
 
 const index = () => {
-    const dispatch = new useDispatch();
+    const dispatch = useDispatch();
     const { segments } = useSelector((state) => state.CustomersReducer);
     const [options, setOptions] = useState([]);
 
-    const [prevPage, setPrevPage] = useState(1);
+    const pageInfoRef = useRef({});
+    const prevPageRef = useRef(0);
     const [currentPage, setCurrentPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [totalRecords, setTotalRecords] = useState(0);
@@ -107,7 +112,12 @@ const index = () => {
     const [searchValue, setSearchValue] = useState('');
     const [picker, setPicker] = useState(getDefaultTradeAccountsDateRange());
     const isBigSpenderSegment = BIG_SPENDER_SEGMENTS.has(selectedSegment);
-    const isActiveTradeAccountsSegment = selectedSegment === ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID;
+    const TRADE_ACCOUNT_SEGMENTS = new Set([
+        ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID,
+        TRADE_ACCOUNT_NEVER_ORDERED_SEGMENT_ID,
+        TRADE_ACCOUNT_ONCE_ORDERED_SEGMENT_ID,
+    ]);
+    const isActiveTradeAccountsSegment = TRADE_ACCOUNT_SEGMENTS.has(selectedSegment);
     const showDatePicker = isActiveTradeAccountsSegment;
     const hasValidTradeAccountsRange = !isActiveTradeAccountsSegment || hasCompleteDateRange(picker);
     
@@ -119,50 +129,51 @@ const index = () => {
 
     // Navigation
     useEffect(() => {
-        if(currentPage > 0 && hasValidTradeAccountsRange){
-            (async () => {
-                try {
-                    const before = pageInfo.startCursor;
-                    const after  = pageInfo.endCursor;
-    
-                    const response = await axiosInstance.get('customer/segment/records',{
-                        params: { 
-                            id:selectedSegment,
-                            perPage: rowsPerPage,
-                            before,
-                            after,
-                            isNext:(currentPage > prevPage)?true:false,
-                            search: searchValue,
-                            ...(isActiveTradeAccountsSegment ? {
-                                fromDate: formatDateForApi(picker?.[0]),
-                                toDate: formatDateForApi(picker?.[1]),
-                            } : {}),
-                            segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
-                        }
-                    });
-                    
-                    if(response.data.success){
-                        setSegmentMember(response.data.data.members);
-                        setPageInfo(response.data.data.pageInfo);
+        if (currentPage <= 0 || !selectedSegment || !hasValidTradeAccountsRange) return;
+
+        const fetchPage = async () => {
+            try {
+                const before = pageInfoRef.current.startCursor;
+                const after = pageInfoRef.current.endCursor;
+                const isNext = currentPage > prevPageRef.current;
+
+                const response = await axiosInstance.get('customer/segment/records', {
+                    params: {
+                        id: selectedSegment,
+                        perPage: rowsPerPage,
+                        before,
+                        after,
+                        isNext,
+                        search: searchValue,
+                        ...(isActiveTradeAccountsSegment ? {
+                            fromDate: formatDateForApi(normalizeToUtcMidnight(picker?.[0])),
+                            toDate: formatDateForApi(normalizeToUtcMidnight(picker?.[1])),
+                        } : {}),
+                        segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
                     }
-                } catch (error) {
-                    let errorMessage = import.meta.env.VITE_ERROR_MSG;
-                    
-                    if(error.response){
-                        errorMessage = error.response.data?.message || JSON.stringify(error.response.data); // Case 1: API responded with an error
-                    }else if (error.request){
-                        errorMessage = import.meta.env.VITE_NO_RESPONSE; // Case 2: Network error
-                    }
-    
-                    // console.error(error.message);
-                    toast.error(errorMessage);
+                });
+
+                if (response.data.success) {
+                    setSegmentMember(response.data.data.members);
+                    setPageInfo(response.data.data.pageInfo);
+                    pageInfoRef.current = response.data.data.pageInfo;
+                    prevPageRef.current = currentPage;
                 }
-            })();
-        }
+            } catch (error) {
+                let errorMessage = import.meta.env.VITE_ERROR_MSG;
 
-        setPrevPage(currentPage);
-    },[currentPage, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, searchValue, isActiveTradeAccountsSegment, isBigSpenderSegment, pageInfo, prevPage]);
+                if (error.response) {
+                    errorMessage = error.response.data?.message || JSON.stringify(error.response.data);
+                } else if (error.request) {
+                    errorMessage = import.meta.env.VITE_NO_RESPONSE;
+                }
 
+                toast.error(errorMessage);
+            }
+        };
+
+        fetchPage();
+    }, [currentPage, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, searchValue, isActiveTradeAccountsSegment, isBigSpenderSegment]);
     // Search / initial load for selected segment
     useEffect(() => {
         if (!selectedSegment || !hasValidTradeAccountsRange) return;
@@ -175,8 +186,8 @@ const index = () => {
                         perPage: rowsPerPage,
                         search: searchValue,
                         ...(isActiveTradeAccountsSegment ? {
-                            fromDate: formatDateForApi(picker?.[0]),
-                            toDate: formatDateForApi(picker?.[1]),
+                            fromDate: formatDateForApi(normalizeToUtcMidnight(picker?.[0])),
+                            toDate: formatDateForApi(normalizeToUtcMidnight(picker?.[1])),
                         } : {}),
                         segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
                     }
@@ -185,8 +196,9 @@ const index = () => {
                 if (response.data.success) {
                     setSegmentMember(response.data.data.members);
                     setPageInfo(response.data.data.pageInfo);
+                    pageInfoRef.current = response.data.data.pageInfo;
                     setTotalRecords(response.data.data.totalCount);
-                    setPrevPage(0);
+                    prevPageRef.current = 0;
                     if (currentPage !== 0) {
                         setCurrentPage(0);
                     }
@@ -222,7 +234,7 @@ const index = () => {
             setSelectedSegmentName(selectedOption.label || 'segment');
             setCurrentPage(0);
 
-            if (selectedOption.value === ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID) {
+            if (TRADE_ACCOUNT_SEGMENTS.has(selectedOption.value)) {
                 setPicker(getDefaultTradeAccountsDateRange());
             }
         } catch (error) {
@@ -251,8 +263,8 @@ const index = () => {
                     id: selectedSegment,
                     segmentName: selectedSegmentName || 'segment',
                     ...(isActiveTradeAccountsSegment ? {
-                        fromDate: formatDateForApi(picker?.[0]),
-                        toDate: formatDateForApi(picker?.[1]),
+                        fromDate: formatDateForApi(normalizeToUtcMidnight(picker?.[0])),
+                        toDate: formatDateForApi(normalizeToUtcMidnight(picker?.[1])),
                     } : {}),
                     segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
                 },
@@ -301,10 +313,12 @@ const index = () => {
 
     // Rows Per Page Change
     useEffect(() => {
-        if(selectedSegment != ''){
+        if (selectedSegment !== '') {
             setCurrentPage(0);
+            prevPageRef.current = 0;
+            pageInfoRef.current = {};
         }
-    },[rowsPerPage]);
+    }, [rowsPerPage, selectedSegment]);
 
     return (
         <>
