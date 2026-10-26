@@ -1,4 +1,4 @@
-import { leadSourceLabels, leadStatusLabels, lowStockThreshold, ABANDONED_CHECKOUT_SEGMENT_ID, CUSTOMERS_ADDED_TO_COMPANIES_SEGMENT_ID } from '../../../constants';
+import { leadSourceLabels, leadStatusLabels, lowStockThreshold, ABANDONED_CHECKOUT_SEGMENT_ID, CUSTOMERS_ADDED_TO_COMPANIES_SEGMENT_ID, LAST_ORDER_WINDOW_SEGMENT_IDS } from '../../../constants';
 import { Edit } from "react-feather";
 import { Badge } from 'reactstrap'
 
@@ -178,6 +178,7 @@ const formatInsightDate = (value) => {
 export const cusInsightsTableColumn = (currentPage, rowsPerPage, selectedSegment) => {
     const useAbandonedCheckoutDate = selectedSegment === ABANDONED_CHECKOUT_SEGMENT_ID;
     const useCompanyAddedDate = selectedSegment === CUSTOMERS_ADDED_TO_COMPANIES_SEGMENT_ID;
+    const useLastPurchasedDate = LAST_ORDER_WINDOW_SEGMENT_IDS.includes(selectedSegment);
 
     return [
     {
@@ -264,11 +265,11 @@ export const cusInsightsTableColumn = (currentPage, rowsPerPage, selectedSegment
         width: "130px"
     },
     {
-        name: useAbandonedCheckoutDate ? "Abandoned Checkout Date" : (useCompanyAddedDate ? "Company Added Date" : "Added Date"),
-        selector: (row) => useAbandonedCheckoutDate ? (row.node?.abandoned_checkout_date || '') : (useCompanyAddedDate ? (row.node?.companyAddedAt || '') : (row.node?.createdAt || '')),
+        name: useAbandonedCheckoutDate ? "Abandoned Checkout Date" : (useCompanyAddedDate ? "Company Added Date" : (useLastPurchasedDate ? "Last Purchased" : "Added Date")),
+        selector: (row) => useAbandonedCheckoutDate ? (row.node?.abandoned_checkout_date || '') : (useCompanyAddedDate ? (row.node?.companyAddedAt || '') : (useLastPurchasedDate ? (row.node?.lastPurchasedAt || '') : (row.node?.createdAt || ''))),
         sortable: true,
         cell: (row) => {
-            const dateValue = useAbandonedCheckoutDate ? row.node?.abandoned_checkout_date : (useCompanyAddedDate ? row.node?.companyAddedAt : row.node?.createdAt);
+            const dateValue = useAbandonedCheckoutDate ? row.node?.abandoned_checkout_date : (useCompanyAddedDate ? row.node?.companyAddedAt : (useLastPurchasedDate ? row.node?.lastPurchasedAt : row.node?.createdAt));
             const formattedDate = formatInsightDate(dateValue);
 
             return (

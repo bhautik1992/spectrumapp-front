@@ -28,6 +28,10 @@ export const BIG_SPENDER_SEGMENT_IDS = [
     'gid://shopify/Segment/1145045746046',
     'gid://shopify/Segment/1145045778814',
 ];
+export const LAST_ORDER_WINDOW_SEGMENT_IDS = [
+    'gid://shopify/Segment/1145045221758',
+    'gid://shopify/Segment/1145045254526',
+];
 
 export const ABANDONED_CHECKOUT_SEGMENT_ID = 'gid://shopify/Segment/363996381437';
 export const MULTIPLE_PURCHASES_SEGMENT_ID = 'gid://shopify/Segment/363996512509';
