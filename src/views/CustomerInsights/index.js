@@ -12,7 +12,7 @@ import { Spinner } from 'reactstrap';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import '@styles/react/libs/flatpickr/flatpickr.scss';
-import { BIG_SPENDER_SEGMENT_IDS, ABANDONED_CHECKOUT_SEGMENT_ID, MULTIPLE_PURCHASES_SEGMENT_ID, B2B_PURCHASED_ONCE_SEGMENT_ID, ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID, TRADE_ACCOUNT_NEVER_ORDERED_SEGMENT_ID, TRADE_ACCOUNT_ONCE_ORDERED_SEGMENT_ID } from '../../constants';
+import { BIG_SPENDER_SEGMENT_IDS, ABANDONED_CHECKOUT_SEGMENT_ID, MULTIPLE_PURCHASES_SEGMENT_ID, B2B_PURCHASED_ONCE_SEGMENT_ID, CUSTOMERS_ADDED_TO_COMPANIES_SEGMENT_ID, ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID, TRADE_ACCOUNT_NEVER_ORDERED_SEGMENT_ID, TRADE_ACCOUNT_ONCE_ORDERED_SEGMENT_ID } from '../../constants';
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { cusInsightsTableColumn } from '../Table/Columns';
@@ -113,14 +113,16 @@ const index = () => {
     const [picker, setPicker] = useState(getDefaultTradeAccountsDateRange());
     const isBigSpenderSegment = BIG_SPENDER_SEGMENTS.has(selectedSegment);
     const isRecentOrderSegment = [MULTIPLE_PURCHASES_SEGMENT_ID, B2B_PURCHASED_ONCE_SEGMENT_ID].includes(selectedSegment);
+    const isCustomersAddedToCompaniesSegment = selectedSegment === CUSTOMERS_ADDED_TO_COMPANIES_SEGMENT_ID;
     const TRADE_ACCOUNT_SEGMENTS = new Set([
         ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID,
         TRADE_ACCOUNT_NEVER_ORDERED_SEGMENT_ID,
         TRADE_ACCOUNT_ONCE_ORDERED_SEGMENT_ID,
     ]);
     const isActiveTradeAccountsSegment = TRADE_ACCOUNT_SEGMENTS.has(selectedSegment);
-    const showDatePicker = isActiveTradeAccountsSegment;
-    const hasValidTradeAccountsRange = !isActiveTradeAccountsSegment || hasCompleteDateRange(picker);
+    const isDateFilteredSegment = isActiveTradeAccountsSegment || isCustomersAddedToCompaniesSegment;
+    const showDatePicker = isDateFilteredSegment;
+    const hasValidTradeAccountsRange = !isDateFilteredSegment || hasCompleteDateRange(picker);
     
     useEffect(() => {
         setSelectedSegment('');
@@ -146,7 +148,7 @@ const index = () => {
                         after,
                         isNext,
                         search: searchValue,
-                        ...(isActiveTradeAccountsSegment ? {
+                        ...(isDateFilteredSegment ? {
                             fromDate: formatDateForApi(normalizeToUtcMidnight(picker?.[0])),
                             toDate: formatDateForApi(normalizeToUtcMidnight(picker?.[1])),
                         } : {}),
@@ -174,7 +176,7 @@ const index = () => {
         };
 
         fetchPage();
-    }, [currentPage, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, searchValue, isActiveTradeAccountsSegment, isBigSpenderSegment, isRecentOrderSegment]);
+    }, [currentPage, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, searchValue, isDateFilteredSegment, isBigSpenderSegment, isRecentOrderSegment]);
     // Search / initial load for selected segment
     useEffect(() => {
         if (!selectedSegment || !hasValidTradeAccountsRange) return;
@@ -186,7 +188,7 @@ const index = () => {
                         id: selectedSegment,
                         perPage: rowsPerPage,
                         search: searchValue,
-                        ...(isActiveTradeAccountsSegment ? {
+                        ...(isDateFilteredSegment ? {
                             fromDate: formatDateForApi(normalizeToUtcMidnight(picker?.[0])),
                             toDate: formatDateForApi(normalizeToUtcMidnight(picker?.[1])),
                         } : {}),
@@ -216,7 +218,7 @@ const index = () => {
                 toast.error(errorMessage);
             }
         })();
-    }, [searchValue, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, isActiveTradeAccountsSegment, isBigSpenderSegment, isRecentOrderSegment]);
+    }, [searchValue, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, isDateFilteredSegment, isBigSpenderSegment, isRecentOrderSegment]);
 
     useEffect(() => {
         const temp = segments.map(({ id, name }) => ({
@@ -235,7 +237,7 @@ const index = () => {
             setSelectedSegmentName(selectedOption.label || 'segment');
             setCurrentPage(0);
 
-            if (TRADE_ACCOUNT_SEGMENTS.has(selectedOption.value)) {
+            if (TRADE_ACCOUNT_SEGMENTS.has(selectedOption.value) || selectedOption.value === CUSTOMERS_ADDED_TO_COMPANIES_SEGMENT_ID) {
                 setPicker(getDefaultTradeAccountsDateRange());
             }
         } catch (error) {
@@ -254,7 +256,7 @@ const index = () => {
 
     const handleExportCsv = async () => {
         if(!selectedSegment) return;
-        if (isActiveTradeAccountsSegment && !hasValidTradeAccountsRange) return;
+        if (isDateFilteredSegment && !hasValidTradeAccountsRange) return;
 
         try {
             setExporting(true);
@@ -263,7 +265,7 @@ const index = () => {
                 params: {
                     id: selectedSegment,
                     segmentName: selectedSegmentName || 'segment',
-                    ...(isActiveTradeAccountsSegment ? {
+                    ...(isDateFilteredSegment ? {
                         fromDate: formatDateForApi(normalizeToUtcMidnight(picker?.[0])),
                         toDate: formatDateForApi(normalizeToUtcMidnight(picker?.[1])),
                     } : {}),
@@ -371,7 +373,7 @@ const index = () => {
 
                         {showDatePicker && (
                             <Col md='4'>
-                                <Label for='date-range-picker'>Select Date</Label>
+                                <Label for='date-range-picker'>{isCustomersAddedToCompaniesSegment ? 'Select Company Added Date Range' : 'Select Date Range'}</Label>
                                 <Flatpickr
                                     value={picker}
                                     id='date-range-picker'
