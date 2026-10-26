@@ -12,7 +12,7 @@ import { Spinner } from 'reactstrap';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import '@styles/react/libs/flatpickr/flatpickr.scss';
-import { BIG_SPENDER_SEGMENT_IDS, ABANDONED_CHECKOUT_SEGMENT_ID, ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID, TRADE_ACCOUNT_NEVER_ORDERED_SEGMENT_ID, TRADE_ACCOUNT_ONCE_ORDERED_SEGMENT_ID } from '../../constants';
+import { BIG_SPENDER_SEGMENT_IDS, ABANDONED_CHECKOUT_SEGMENT_ID, MULTIPLE_PURCHASES_SEGMENT_ID, ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID, TRADE_ACCOUNT_NEVER_ORDERED_SEGMENT_ID, TRADE_ACCOUNT_ONCE_ORDERED_SEGMENT_ID } from '../../constants';
 
 import DataTableComponent from '../Table/DataTableComponent';
 import { cusInsightsTableColumn } from '../Table/Columns';
@@ -112,6 +112,7 @@ const index = () => {
     const [searchValue, setSearchValue] = useState('');
     const [picker, setPicker] = useState(getDefaultTradeAccountsDateRange());
     const isBigSpenderSegment = BIG_SPENDER_SEGMENTS.has(selectedSegment);
+    const isMultiplePurchasesSegment = selectedSegment === MULTIPLE_PURCHASES_SEGMENT_ID;
     const TRADE_ACCOUNT_SEGMENTS = new Set([
         ACTIVE_TRADE_ACCOUNTS_SEGMENT_ID,
         TRADE_ACCOUNT_NEVER_ORDERED_SEGMENT_ID,
@@ -149,7 +150,7 @@ const index = () => {
                             fromDate: formatDateForApi(normalizeToUtcMidnight(picker?.[0])),
                             toDate: formatDateForApi(normalizeToUtcMidnight(picker?.[1])),
                         } : {}),
-                        segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
+                        segmentType: isBigSpenderSegment ? 'big_spender_window' : (isMultiplePurchasesSegment ? 'recent_ordered' : 'default')
                     }
                 });
 
@@ -173,7 +174,7 @@ const index = () => {
         };
 
         fetchPage();
-    }, [currentPage, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, searchValue, isActiveTradeAccountsSegment, isBigSpenderSegment]);
+    }, [currentPage, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, searchValue, isActiveTradeAccountsSegment, isBigSpenderSegment, isMultiplePurchasesSegment]);
     // Search / initial load for selected segment
     useEffect(() => {
         if (!selectedSegment || !hasValidTradeAccountsRange) return;
@@ -189,7 +190,7 @@ const index = () => {
                             fromDate: formatDateForApi(normalizeToUtcMidnight(picker?.[0])),
                             toDate: formatDateForApi(normalizeToUtcMidnight(picker?.[1])),
                         } : {}),
-                        segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
+                        segmentType: isBigSpenderSegment ? 'big_spender_window' : (isMultiplePurchasesSegment ? 'recent_ordered' : 'default')
                     }
                 });
 
@@ -215,7 +216,7 @@ const index = () => {
                 toast.error(errorMessage);
             }
         })();
-    }, [searchValue, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, isActiveTradeAccountsSegment, isBigSpenderSegment]);
+    }, [searchValue, selectedSegment, rowsPerPage, hasValidTradeAccountsRange, picker, isActiveTradeAccountsSegment, isBigSpenderSegment, isMultiplePurchasesSegment]);
 
     useEffect(() => {
         const temp = segments.map(({ id, name }) => ({
@@ -266,7 +267,7 @@ const index = () => {
                         fromDate: formatDateForApi(normalizeToUtcMidnight(picker?.[0])),
                         toDate: formatDateForApi(normalizeToUtcMidnight(picker?.[1])),
                     } : {}),
-                    segmentType: isBigSpenderSegment ? 'big_spender_window' : 'default'
+                    segmentType: isBigSpenderSegment ? 'big_spender_window' : (isMultiplePurchasesSegment ? 'recent_ordered' : 'default')
                 },
                 responseType: 'blob',
             });
