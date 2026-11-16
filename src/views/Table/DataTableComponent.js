@@ -107,7 +107,7 @@ const DataTableComponent = ({
                     </Col>
 
                     {(hasSearch) &&
-                    <Col xl='6' className='d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1'>
+                    <Col xs='6' className='d-flex align-items-sm-center justify-content-end flex-nowrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1'>
                         <div className='d-flex align-items-center mb-sm-0 mb-1 me-1'>
                             <label className='mb-0' htmlFor='search-invoice'>
                                 Search:
