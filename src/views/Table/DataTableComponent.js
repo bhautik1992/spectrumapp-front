@@ -108,8 +108,8 @@ const DataTableComponent = ({
 
                     {(hasSearch) &&
                     <Col xs='6' className='d-flex align-items-sm-center justify-content-end flex-nowrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1'>
-                        <div className='d-flex align-items-center mb-sm-0 mb-1 me-1'>
-                            <label className='mb-0' htmlFor='search-invoice'>
+                        <div className='d-flex align-items-center w-100 mb-sm-0 mb-1 me-1'>
+                            <label className='mb-0 flex-shrink-0' htmlFor='search-input'>
                                 Search:
                             </label>
 
@@ -118,7 +118,8 @@ const DataTableComponent = ({
                                 id='search-input'
                                 placeholder={searchPlaceholder}
                                 aria-label={searchPlaceholder}
-                                className='ms-50 w-100 dataTable-filter'
+                                className='ms-50 flex-grow-1 dataTable-filter'
+                                style={{ minWidth: 0 }}
                                 value={searchValue}
                                 onChange={handleSearch}
                             />
