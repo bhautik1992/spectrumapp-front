@@ -9,7 +9,7 @@ const DataTableComponent = ({
     rowsPerPage, searchValue, setCurrentPage, 
     setRowsPerPage, setSearchValue, isExpandable, 
     expandableColumns,hasPaginateWithNum = true, pageInfo = {}, 
-    hasSearch = true, dense = true, expandOnRowClicked = true }) => {
+    hasSearch = true, searchPlaceholder = 'Search', dense = true, expandOnRowClicked = true }) => {
     
     const CustomPagination = () => {
         const count = Math.ceil(total / rowsPerPage)
@@ -80,7 +80,7 @@ const DataTableComponent = ({
 
         const handleSearch = (e) => {
             setSearchValue(e.target.value);
-            setCurrentPage(0);
+            setCurrentPage(1);
         };
 
     return (
@@ -116,6 +116,8 @@ const DataTableComponent = ({
                             <Input
                                 type='text'
                                 id='search-input'
+                                placeholder={searchPlaceholder}
+                                aria-label={searchPlaceholder}
                                 className='ms-50 w-100 dataTable-filter'
                                 value={searchValue}
                                 onChange={handleSearch}
